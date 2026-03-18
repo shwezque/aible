@@ -44,18 +44,18 @@ export default function TopicIndex({ show, onClose, currentTopicId }) {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 z-50 bg-white rounded-t-2xl max-h-[75vh] overflow-y-auto"
+            className="fixed bottom-0 left-0 right-0 z-50 bg-surface rounded-t-2xl max-h-[75vh] overflow-y-auto"
             style={{ maxWidth: 428, margin: '0 auto' }}
           >
             {/* Handle */}
             <div className="flex justify-center pt-3 pb-1">
-              <div className="w-10 h-1 bg-gray-300 rounded-full" />
+              <div className="w-10 h-1 bg-line rounded-full" />
             </div>
 
             {/* Header */}
-            <div className="px-5 py-3 flex items-center justify-between border-b border-gray-100">
-              <h2 className="text-lg font-bold text-gray-900">Topics</h2>
-              <button onClick={onClose} className="text-gray-400 p-1">
+            <div className="px-5 py-3 flex items-center justify-between border-b border-line-subtle">
+              <h2 className="text-lg font-bold text-ink">Topics</h2>
+              <button onClick={onClose} className="text-ink-tertiary p-1">
                 <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
@@ -73,14 +73,14 @@ export default function TopicIndex({ show, onClose, currentTopicId }) {
                 if (topic.isComingSoon) {
                   return (
                     <div key={topic.id} className="px-5 py-3 flex items-center gap-3 opacity-40">
-                      <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-lg">
+                      <div className="w-10 h-10 rounded-full bg-surface-alt flex items-center justify-center text-lg">
                         {topic.icon}
                       </div>
                       <div className="flex-1">
-                        <p className="text-sm font-semibold text-gray-400">{topic.name}</p>
-                        <p className="text-xs text-gray-400">Coming Soon</p>
+                        <p className="text-sm font-semibold text-ink-tertiary">{topic.name}</p>
+                        <p className="text-xs text-ink-tertiary">Coming Soon</p>
                       </div>
-                      <svg className="w-4 h-4 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
+                      <svg className="w-4 h-4 text-line" fill="currentColor" viewBox="0 0 20 20">
                         <path fillRule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clipRule="evenodd" />
                       </svg>
                     </div>
@@ -91,8 +91,8 @@ export default function TopicIndex({ show, onClose, currentTopicId }) {
                   <button
                     key={topic.id}
                     onClick={() => handleTap(topic.id)}
-                    className={`w-full px-5 py-3 flex items-center gap-3 hover:bg-gray-50 active:bg-gray-100 transition-colors ${
-                      isCurrent ? 'border-l-3 border-l-primary bg-purple-50/50' : ''
+                    className={`w-full px-5 py-3 flex items-center gap-3 hover:bg-surface-alt active:bg-surface-alt transition-colors ${
+                      isCurrent ? 'border-l-3 border-l-primary bg-primary/5' : ''
                     }`}
                   >
                     <div
@@ -103,14 +103,14 @@ export default function TopicIndex({ show, onClose, currentTopicId }) {
                     </div>
                     <div className="flex-1 text-left">
                       <div className="flex items-center gap-2">
-                        <p className="text-sm font-semibold text-gray-900">{topic.name}</p>
+                        <p className="text-sm font-semibold text-ink">{topic.name}</p>
                         {isCurrent && (
-                          <span className="text-[10px] font-medium text-primary bg-purple-50 px-1.5 py-0.5 rounded">
+                          <span className="text-[10px] font-medium text-primary bg-primary/10 px-1.5 py-0.5 rounded">
                             Current
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-xs text-ink-secondary">
                         {coveredCount > 0
                           ? `${coveredCount} of ${totalConcepts} concepts`
                           : 'Start'}

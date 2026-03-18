@@ -24,9 +24,9 @@ export default function Preferences() {
   }
 
   return (
-    <div className="h-full flex flex-col bg-white">
+    <div className="h-full flex flex-col bg-surface">
       <div className="px-5 pt-4 flex justify-end">
-        <button onClick={handleSkip} className="text-sm text-gray-400 font-medium">
+        <button onClick={handleSkip} className="text-sm text-ink-tertiary font-medium">
           Skip
         </button>
       </div>
@@ -35,7 +35,7 @@ export default function Preferences() {
         <motion.p
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-lg font-semibold text-gray-900"
+          className="text-lg font-semibold text-ink"
         >
           One quick thing...
         </motion.p>
@@ -43,7 +43,7 @@ export default function Preferences() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
-          className="text-base text-gray-500 mt-1"
+          className="text-base text-ink-secondary mt-1"
         >
           How much do you know about AI?
         </motion.p>
@@ -56,10 +56,10 @@ export default function Preferences() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.15 + i * 0.05 }}
               onClick={() => handleSelect(opt.value)}
-              className="w-full text-left px-4 py-4 rounded-xl border border-gray-200 bg-white hover:border-gray-300 active:bg-gray-50 transition-all"
+              className="w-full text-left px-4 py-4 rounded-xl border border-line bg-surface hover:border-ink-tertiary active:bg-surface-alt transition-all"
             >
-              <p className="text-[15px] font-semibold text-gray-900">{opt.label}</p>
-              <p className="text-[13px] text-gray-500 mt-0.5">{opt.desc}</p>
+              <p className="text-[15px] font-semibold text-ink">{opt.label}</p>
+              <p className="text-[13px] text-ink-secondary mt-0.5">{opt.desc}</p>
             </motion.button>
           ))}
         </div>

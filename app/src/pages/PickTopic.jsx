@@ -23,12 +23,12 @@ export default function PickTopic() {
   }
 
   return (
-    <div className="h-full flex flex-col bg-white">
+    <div className="h-full flex flex-col bg-surface">
       <div className="flex-1 overflow-y-auto px-6 pt-12 pb-4">
         <motion.h1
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-xl font-bold text-gray-900"
+          className="text-xl font-bold text-ink"
         >
           What are you most curious about?
         </motion.h1>
@@ -48,10 +48,10 @@ export default function PickTopic() {
                 disabled={!isActive}
                 className={`relative text-left p-4 rounded-xl border transition-all ${
                   isSelected
-                    ? 'border-primary bg-purple-50 ring-2 ring-primary'
+                    ? 'border-primary bg-primary/10 ring-2 ring-primary'
                     : isActive
-                    ? 'border-gray-200 bg-white hover:border-gray-300 active:bg-gray-50'
-                    : 'border-gray-100 bg-gray-50 opacity-50'
+                    ? 'border-line bg-surface hover:border-ink-tertiary active:bg-surface-alt'
+                    : 'border-line-subtle bg-bg opacity-50'
                 }`}
               >
                 <div
@@ -59,10 +59,10 @@ export default function PickTopic() {
                   style={{ backgroundColor: topic.color }}
                 />
                 <div className="text-2xl mb-2 ml-1">{topic.icon}</div>
-                <p className={`text-[15px] font-semibold ml-1 ${isActive ? 'text-gray-900' : 'text-gray-400'}`}>
+                <p className={`text-[15px] font-semibold ml-1 ${isActive ? 'text-ink' : 'text-ink-tertiary'}`}>
                   {topic.name}
                 </p>
-                <p className={`text-[13px] mt-0.5 ml-1 ${isActive ? 'text-gray-500' : 'text-gray-400'}`}>
+                <p className={`text-[13px] mt-0.5 ml-1 ${isActive ? 'text-ink-secondary' : 'text-ink-tertiary'}`}>
                   {topic.isComingSoon ? 'Coming Soon' : topic.subtitle}
                 </p>
                 {isSelected && (
@@ -81,19 +81,19 @@ export default function PickTopic() {
           })}
         </div>
 
-        <p className="text-[13px] text-gray-400 text-center mt-4">
+        <p className="text-[13px] text-ink-tertiary text-center mt-4">
           Pick one to start — you can explore others anytime
         </p>
       </div>
 
-      <div className="px-6 pb-10 pt-3 bg-white border-t border-gray-100">
+      <div className="px-6 pb-10 pt-3 bg-surface border-t border-line-subtle">
         <button
           onClick={handleStart}
           disabled={!selected}
           className={`w-full font-semibold text-lg py-3.5 rounded-xl transition-all ${
             selected
               ? 'bg-primary text-white hover:bg-primary-dark active:scale-[0.98]'
-              : 'bg-gray-100 text-gray-400 cursor-not-allowed'
+              : 'bg-surface-alt text-ink-tertiary cursor-not-allowed'
           }`}
         >
           Start Learning

@@ -24,17 +24,17 @@ function SessionOpener({ topic }) {
   return (
     <div className="flex flex-col items-center py-6 px-4">
       <TutorAvatar color={topic.color} name={topic.tutorName} size={48} />
-      <p className="text-base font-semibold mt-3 text-gray-900">
+      <p className="text-base font-semibold mt-3 text-ink">
         Hey! I'm {topic.tutorName}, your {topic.name} tutor.
       </p>
-      <p className="text-sm text-gray-500 mt-1 text-center">
+      <p className="text-sm text-ink-secondary mt-1 text-center">
         Ready to explore {topic.subtitle.toLowerCase()}? Let's start with the basics.
       </p>
-      <div className="mt-4 w-full bg-white rounded-xl border border-gray-200 p-3">
-        <p className="text-[11px] font-semibold text-gray-400 uppercase tracking-wide">Today's goal</p>
+      <div className="mt-4 w-full bg-surface rounded-xl border border-line p-3 shadow-theme">
+        <p className="text-[11px] font-semibold text-ink-tertiary uppercase tracking-wide">Today's goal</p>
         <ul className="mt-2 space-y-1">
           {(topic.conceptMap || []).slice(0, 3).map((c, i) => (
-            <li key={i} className="text-sm text-gray-600 flex items-center gap-2">
+            <li key={i} className="text-sm text-ink-secondary flex items-center gap-2">
               <span className="w-1.5 h-1.5 rounded-full bg-secondary shrink-0" />
               {c.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
             </li>
@@ -50,10 +50,10 @@ function AIBubble({ content, color, tutorName }) {
     <div className="flex gap-2 items-start px-4">
       <TutorAvatar color={color} name={tutorName} size={28} />
       <div
-        className="bg-white rounded-2xl px-3.5 py-2.5 max-w-[82%] border-l-3"
+        className="bg-surface rounded-2xl px-3.5 py-2.5 max-w-[82%] border-l-3"
         style={{ borderLeftColor: color }}
       >
-        <p className="text-[15px] leading-relaxed text-gray-900 whitespace-pre-wrap">{content}</p>
+        <p className="text-[15px] leading-relaxed text-ink whitespace-pre-wrap">{content}</p>
       </div>
     </div>
   )
@@ -81,17 +81,17 @@ function QuizCard({ metadata, onAnswer }) {
   }
 
   return (
-    <div className="mx-4 bg-white rounded-xl border border-purple-200 p-4">
+    <div className="mx-4 bg-surface rounded-xl border border-primary/30 p-4 shadow-theme">
       <p className="text-[11px] font-semibold uppercase tracking-wider text-primary mb-2">Quick Check</p>
-      <p className="text-[15px] font-semibold text-gray-900 mb-3">{question}</p>
+      <p className="text-[15px] font-semibold text-ink mb-3">{question}</p>
       <div className="space-y-2">
         {(options || []).map((opt, i) => {
-          let bg = 'bg-white', border = 'border-gray-200', text = 'text-gray-700', icon = null
+          let bg = 'bg-surface', border = 'border-line', text = 'text-ink', icon = null
           if (answered) {
             if (i === correctIndex) {
               bg = 'bg-teal-50'; border = 'border-teal-400'; text = 'text-teal-800'; icon = '✓'
             } else if (i === selected && i !== correctIndex) {
-              bg = 'bg-amber-50'; border = 'border-amber-300'; text = 'text-amber-800'
+              bg = 'bg-accent/10'; border = 'border-amber-300'; text = 'text-accent'
             }
           }
           return (
@@ -123,7 +123,7 @@ function SuggestionChips({ suggestions, onTap }) {
         <button
           key={i}
           onClick={() => onTap(s)}
-          className="shrink-0 px-4 py-2 rounded-full border border-gray-200 text-sm text-gray-700 bg-white hover:bg-gray-50 active:bg-gray-100 transition-colors"
+          className="shrink-0 px-4 py-2 rounded-full border border-line text-sm text-ink bg-surface hover:bg-surface-alt active:bg-surface-alt transition-colors"
         >
           {s}
         </button>
@@ -135,10 +135,10 @@ function SuggestionChips({ suggestions, onTap }) {
 function TypingIndicator({ color }) {
   return (
     <div className="flex gap-2 items-start px-4">
-      <div className="bg-white rounded-2xl px-4 py-3 border-l-3" style={{ borderLeftColor: color }}>
+      <div className="bg-surface rounded-2xl px-4 py-3 border-l-3" style={{ borderLeftColor: color }}>
         <div className="flex gap-1">
           {[0, 150, 300].map(delay => (
-            <span key={delay} className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: `${delay}ms` }} />
+            <span key={delay} className="w-2 h-2 bg-ink-tertiary rounded-full animate-bounce" style={{ animationDelay: `${delay}ms` }} />
           ))}
         </div>
       </div>
@@ -149,9 +149,9 @@ function TypingIndicator({ color }) {
 function ConceptCard({ conceptId }) {
   const title = conceptId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
   return (
-    <div className="mx-4 bg-white rounded-xl border border-gray-200 p-4">
+    <div className="mx-4 bg-surface rounded-xl border border-line p-4 shadow-theme">
       <p className="text-[11px] font-semibold uppercase tracking-wider text-teal-600 mb-1">Key Concept</p>
-      <p className="text-base font-semibold text-gray-900">{title}</p>
+      <p className="text-base font-semibold text-ink">{title}</p>
       <div className="mt-3 h-0.5 bg-teal-500 rounded-full w-12" />
     </div>
   )
@@ -160,12 +160,12 @@ function ConceptCard({ conceptId }) {
 function SessionSummaryCard({ metadata }) {
   const { conceptsCovered = [], quizTotal = 0, quizPassed = 0 } = metadata || {}
   return (
-    <div className="mx-4 bg-white rounded-xl border-l-3 border-l-primary border border-gray-200 p-4">
+    <div className="mx-4 bg-surface rounded-xl border-l-3 border-l-primary border border-line p-4 shadow-theme">
       <p className="text-sm font-semibold text-primary mb-3">Session Summary</p>
       {conceptsCovered.length > 0 && (
         <ul className="space-y-1.5 mb-3">
           {conceptsCovered.map((c, i) => (
-            <li key={i} className="flex items-center gap-2 text-sm text-gray-700">
+            <li key={i} className="flex items-center gap-2 text-sm text-ink">
               <span className="text-teal-500">✓</span>
               {c.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
             </li>
@@ -173,7 +173,7 @@ function SessionSummaryCard({ metadata }) {
         </ul>
       )}
       {quizTotal > 0 && (
-        <p className="text-sm text-gray-500">Quick Checks: {quizPassed}/{quizTotal} correct</p>
+        <p className="text-sm text-ink-secondary">Quick Checks: {quizPassed}/{quizTotal} correct</p>
       )}
     </div>
   )
@@ -288,19 +288,19 @@ export default function Chat() {
   const lastSuggestionIdx = messages.findLastIndex(m => m.type === 'suggestion')
 
   return (
-    <div className="h-full flex flex-col bg-[#F9FAFB]">
+    <div className="h-full flex flex-col bg-chat-bg">
       {/* Top Bar */}
-      <div className="bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between shrink-0 relative z-20">
-        <button onClick={() => navigate('/home')} className="text-gray-600 p-1">
+      <div className="bg-surface border-b border-line px-4 py-3 flex items-center justify-between shrink-0 relative z-20">
+        <button onClick={() => navigate('/home')} className="text-ink-secondary p-1">
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
         <div className="text-center">
-          <p className="text-base font-semibold text-gray-900">{topic.tutorName}</p>
-          <p className="text-xs text-gray-500">{topic.name}</p>
+          <p className="text-base font-semibold text-ink">{topic.tutorName}</p>
+          <p className="text-xs text-ink-secondary">{topic.name}</p>
         </div>
-        <button className="text-gray-600 p-1" onClick={() => setShowOverflow(!showOverflow)}>
+        <button className="text-ink-secondary p-1" onClick={() => setShowOverflow(!showOverflow)}>
           <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01" />
           </svg>
@@ -311,17 +311,17 @@ export default function Chat() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="absolute right-4 top-14 bg-white rounded-xl shadow-lg border border-gray-200 py-1 z-50 w-48"
+              className="absolute right-4 top-14 bg-surface rounded-xl shadow-theme-md border border-line py-1 z-50 w-48"
             >
               <button
                 onClick={() => { setShowOverflow(false); setShowTopicIndex(true) }}
-                className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50"
+                className="w-full text-left px-4 py-2.5 text-sm text-ink hover:bg-surface-alt"
               >
                 Topic Index
               </button>
               <button
                 onClick={handleEndSession}
-                className="w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50"
+                className="w-full text-left px-4 py-2.5 text-sm text-ink hover:bg-surface-alt"
               >
                 End Session
               </button>
@@ -331,7 +331,7 @@ export default function Chat() {
       </div>
 
       {/* Progress Bar */}
-      <div className="h-1 bg-gray-200 shrink-0">
+      <div className="h-1 bg-surface-alt shrink-0">
         <div
           className="h-full bg-secondary rounded-r-full transition-all duration-500"
           style={{ width: `${progressPercent}%` }}
@@ -386,8 +386,8 @@ export default function Chat() {
         {isStreaming && <TypingIndicator color={topic.color} />}
 
         {error && (
-          <div className="mx-4 bg-amber-50 border border-amber-200 rounded-xl p-3">
-            <p className="text-sm text-amber-800">{error}</p>
+          <div className="mx-4 bg-accent/10 border border-accent/30 rounded-xl p-3">
+            <p className="text-sm text-accent">{error}</p>
             <button
               onClick={() => sendMessage(messages.filter(m => m.role === 'user').pop()?.content || 'Hello')}
               className="text-sm text-primary font-medium mt-1"
@@ -407,7 +407,7 @@ export default function Chat() {
       </div>
 
       {/* Input Area */}
-      <div className="bg-white border-t border-gray-200 px-4 py-3 shrink-0">
+      <div className="bg-surface border-t border-line px-4 py-3 shrink-0">
         <form
           onSubmit={(e) => { e.preventDefault(); handleSend() }}
           className="flex items-center gap-2"
@@ -419,7 +419,7 @@ export default function Chat() {
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="Ask anything..."
             disabled={isStreaming}
-            className="flex-1 bg-gray-100 rounded-full px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-primary/20"
+            className="flex-1 bg-surface-alt rounded-full px-4 py-2.5 text-sm text-ink placeholder:text-ink-tertiary outline-none focus:ring-2 focus:ring-primary/20"
           />
           <button
             type="submit"

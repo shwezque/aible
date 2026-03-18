@@ -5,7 +5,7 @@ export default function Welcome() {
   const navigate = useNavigate()
 
   return (
-    <div className="h-full flex flex-col bg-white px-6">
+    <div className="h-full flex flex-col bg-surface px-6">
       <div className="flex-1 flex flex-col items-center justify-center">
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
@@ -20,7 +20,7 @@ export default function Welcome() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.4 }}
-          className="text-2xl font-bold text-gray-900 text-center"
+          className="text-2xl font-bold text-ink text-center"
         >
           Learn AI by talking about it
         </motion.h1>
@@ -29,7 +29,7 @@ export default function Welcome() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.35, duration: 0.4 }}
-          className="text-base text-gray-500 text-center mt-3 max-w-xs leading-relaxed"
+          className="text-base text-ink-secondary text-center mt-3 max-w-xs leading-relaxed"
         >
           Chat with expert AI tutors who explain things in plain English. No jargon. No coding. Just conversation.
         </motion.p>
