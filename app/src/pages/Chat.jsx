@@ -183,6 +183,7 @@ export default function Chat() {
   const { topicId } = useParams()
   const navigate = useNavigate()
   const topic = getTopicById(topicId)
+  const { user, addXp, checkStreak, completeSession, updateTopicProgress, canStartSession } = useStore()
   const handleConceptDiscovered = (concepts) => {
     const xpPerConcept = XP_ACTIONS.NEW_CONCEPT
     const total = concepts.length * xpPerConcept
@@ -194,8 +195,7 @@ export default function Chat() {
       conceptsCovered: [...(user.topicProgress?.[topicId]?.conceptsCovered || []), ...concepts],
     })
   }
-  const { messages, isStreaming, error, sendMessage, addSystemMessage, session } = useChat(topicId, { onConceptDiscovered: handleConceptDiscovered })
-  const { user, addXp, checkStreak, completeSession, updateTopicProgress, canStartSession } = useStore()
+  const { messages, isStreaming, error, sendMessage, addSystemMessage, session } = useChat(topicId, { onConceptDiscovered: handleConceptDiscovered, learningStyle: user.learningStyle })
   const scrollRef = useRef(null)
   const inputRef = useRef(null)
   const [inputValue, setInputValue] = useState('')

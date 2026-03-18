@@ -10,6 +10,7 @@ function createDefaultUser() {
     role: '',
     goal: '',
     experienceLevel: 'none',
+    learningStyle: 'metaphor',
     xp: 0,
     level: 1,
     streak: 0,
