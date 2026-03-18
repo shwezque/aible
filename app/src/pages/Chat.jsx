@@ -8,6 +8,7 @@ import { XP_ACTIONS } from '../lib/xp'
 import XpToast from '../components/XpToast'
 import CelebrationOverlay from '../components/CelebrationOverlay'
 import TopicIndex from '../components/TopicIndex'
+import RenderMarkdown from '../lib/renderMarkdown'
 
 function TutorAvatar({ color, name, size = 28 }) {
   return (
@@ -53,7 +54,9 @@ function AIBubble({ content, color, tutorName }) {
         className="bg-surface rounded-2xl px-3.5 py-2.5 max-w-[82%] border-l-3"
         style={{ borderLeftColor: color }}
       >
-        <p className="text-[15px] leading-relaxed text-ink whitespace-pre-wrap">{content}</p>
+        <div className="text-[15px] leading-relaxed text-ink">
+          <RenderMarkdown text={content} />
+        </div>
       </div>
     </div>
   )

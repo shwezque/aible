@@ -507,3 +507,103 @@ Aible pivots from Duolingo-style discrete exercises to conversational learning w
   ```
   Fix all P1 bugs from docs/bug-log.md, then run /prep-launch
   ```
+
+---
+
+## Checkpoint — 2026-03-18 (Visual Redesign + Educator Prompts + Brand)
+
+- **Current stage:** Active development — visual redesign, system prompts, and brand integration done. Uncommitted changes pending for brand colors, logo, and markdown renderer.
+- **Current objective:** Commit latest changes (brand colors, logos, markdown renderer, system prompt tweaks), push to deploy, then test on production.
+
+- **Completed in this session:**
+  1. Fixed production API 400 error — updated model ID from deprecated `claude-3-5-haiku-20241022` to `claude-haiku-4-5-20251001`
+  2. Fixed chat retry sending duplicate user messages — `retryLast()` now removes original user message before resending
+  3. Added message deduplication in API handler for Anthropic alternating-role requirement
+  4. Full visual redesign — CSS custom property design system with light/dark adaptive tokens
+  5. Created `useTheme` hook with Light/System/Dark toggle (persisted to localStorage)
+  6. Created Web Audio sound effects library (XP chime, session complete, message sent, error)
+  7. Converted all 8 pages and 4 active components from hardcoded Tailwind grays to semantic tokens
+  8. Added theme toggle and sound toggle to Profile settings
+  9. Fixed garbled AI responses — SSE streaming parser was appending raw JSON fragments as text when chunks split across reads
+  10. Increased max_tokens from 1024 to 2048
+  11. Redesigned system prompts with world-class Feynman-inspired educator framework
+  12. Added 6 learning styles (Analogies, Stories, Step-by-Step, Socratic, Visual/Mnemonics, Plain/Simple) that inject pedagogical instructions into system prompts
+  13. Added learning style picker to onboarding (Preferences page step 2) and Profile settings
+  14. Built `buildSystemPrompt()` that dynamically merges topic personality + learning style + base framework
+  15. Created local dev server (`dev-server.js`) + Vite proxy for testing API locally without Vercel
+  16. Created `.env.local` with Anthropic API key for local dev
+  17. Built full markdown renderer for chat bubbles (bold, italic, code, blockquotes, bullet/numbered lists, headings, dividers)
+  18. Updated system prompt to encourage visual aids (ASCII diagrams, flowcharts, tables) over emoji
+  19. Integrated Aible brand logos — mark, full wordmark, icon variants for light/dark
+  20. Updated color scheme to match brand: primary `#2B4C5E` (dark teal), accent `#F4A478` (peach/coral)
+  21. Replaced placeholder "a" logos with actual brand assets in Welcome, Home header, Paywall
+
+- **Key outputs produced:**
+  | File | Description |
+  |------|-------------|
+  | app/src/hooks/useTheme.jsx | Theme provider with light/system/dark + localStorage persistence |
+  | app/src/lib/sounds.js | Web Audio sound effects (XP, session complete, message, error, haptic) |
+  | app/src/lib/renderMarkdown.jsx | Full markdown renderer for chat bubbles |
+  | app/dev-server.js | Local API proxy server for dev without Vercel |
+  | app/.env.local | Anthropic API key for local development |
+  | app/src/assets/logo-*.png | 6 brand logo variants (mark, full, icon × light/dark) |
+
+- **Files modified:**
+  | File | Change |
+  |------|--------|
+  | app/src/index.css | CSS custom properties for light/dark, brand colors (#2B4C5E, #F4A478) |
+  | app/src/data/topics.js | Complete system prompt rewrite + 6 learning styles + buildSystemPrompt() |
+  | app/src/hooks/useChat.js | SSE buffer fix, buildSystemPrompt integration, learningStyle param |
+  | app/src/hooks/useStore.jsx | Added learningStyle to default user state |
+  | app/src/pages/Profile.jsx | Theme toggle, sound toggle, learning style picker |
+  | app/src/pages/Preferences.jsx | 2-step onboarding: experience level → learning style |
+  | app/src/pages/Chat.jsx | Markdown rendering in AI bubbles, partial tag stripping, useStore before useChat |
+  | app/src/pages/Welcome.jsx | Brand logo mark, accent CTA button |
+  | app/src/pages/Home.jsx | Brand full wordmark in header |
+  | app/src/pages/Paywall.jsx | Brand icon logo |
+  | app/api/chat.js | Model ID fix, message dedup, max_tokens 2048 |
+  | app/vite.config.js | API proxy to localhost:3002 for local dev |
+  | app/index.html | Updated theme-color meta to #2B4C5E |
+  | All pages + components | Hardcoded grays → semantic tokens (bg-surface, text-ink, etc.) |
+
+- **Files to review next:**
+  1. Uncommitted changes — need commit and push
+  2. Test brand colors on production (dark teal primary may need tweaking for contrast)
+  3. Dark mode with brand colors — verify peach accent works on dark backgrounds
+
+- **Commands used:** git push, npm run build, npm run dev
+- **Agents used:** 3 parallel agents for semantic token conversion (Home+Today, Chat, Welcome+PickTopic+Paywall+Preferences)
+- **Skills used:** `/checkpoint`
+
+- **Key decisions:**
+  1. Brand colors from logo: primary dark teal `#2B4C5E`, accent peach `#F4A478` — replaces original purple `#6366F1`
+  2. System prompt redesign: Feynman-inspired framework, no more generic ChatGPT-style responses
+  3. 6 learning styles that dynamically modify the system prompt (not just UI preferences)
+  4. Lightweight custom markdown renderer instead of react-markdown dependency
+  5. Local dev uses separate dev-server.js + Vite proxy instead of vercel dev (which had blank page issues)
+  6. SSE parser fix: buffer incomplete lines across reads, never treat failed JSON as text content
+  7. Topic-specific colors (purple, teal, blue) kept for visual distinction; brand teal used for app chrome
+
+- **Assumptions:**
+  - Brand colors extracted from logo PNGs are accurate (~#2B4C5E and ~#F4A478)
+  - Peach accent provides sufficient contrast on both light and dark backgrounds
+  - Learning style is stored per-user, not per-topic (same style across all tutors)
+  - Local .env.local is gitignored (confirmed: *.local in both .gitignore files)
+
+- **Open questions:**
+  - Should the CTA buttons use accent (peach) or primary (dark teal)? Currently mixed.
+  - Dark mode readability with the new dark teal primary — may need lighter variant
+  - Should learning style persist across browser sessions? (Yes — it's in localStorage via useStore)
+  - The old v1 files (screens/, store/, data/constants.js, data/lessons.js) are still in the repo unused
+
+- **Risks/blockers:**
+  - Uncommitted changes include brand assets and color scheme — need to push before next deploy
+  - API key in .env.local — must never be committed (gitignore verified)
+  - Dark teal (#2B4C5E) as primary may have contrast issues with some backgrounds in dark mode
+
+- **Exact next recommended action:** Commit all uncommitted changes (brand logos, colors, markdown renderer, system prompt updates), push to main, verify Vercel deploy, test on mobile.
+
+- **Exact first prompt or command to run next:**
+  ```
+  Commit and push all changes, then test the deployed app on mobile
+  ```
