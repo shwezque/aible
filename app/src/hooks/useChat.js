@@ -1,7 +1,7 @@
 import { useState, useCallback, useRef } from 'react'
 import { loadChat, saveChat, pruneMessages } from '../lib/storage'
 import { parseAIResponse } from '../lib/parseResponse'
-import { getTopicById } from '../data/topics'
+import { buildSystemPrompt } from '../data/topics'
 
 function createSession(topicId) {
   return {
@@ -18,7 +18,7 @@ function createSession(topicId) {
   }
 }
 
-export function useChat(topicId, { onConceptDiscovered } = {}) {
+export function useChat(topicId, { onConceptDiscovered, learningStyle } = {}) {
   const [session, setSession] = useState(() => {
     return loadChat(topicId) || createSession(topicId)
   })
@@ -77,7 +77,6 @@ export function useChat(topicId, { onConceptDiscovered } = {}) {
 
     setIsStreaming(true)
 
-    const topic = getTopicById(topicId)
     const apiMessages = currentMessages
       .filter(m => m.role === 'user' || m.role === 'assistant')
       .slice(-20)
@@ -109,7 +108,7 @@ export function useChat(topicId, { onConceptDiscovered } = {}) {
         body: JSON.stringify({
           messages: apiMessages,
           topicId,
-          systemPrompt: topic?.systemPrompt || '',
+          systemPrompt: buildSystemPrompt(topicId, learningStyle) || '',
         }),
         signal: controller.signal,
       })

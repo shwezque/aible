@@ -5,6 +5,7 @@ import { useTheme } from '../hooks/useTheme.jsx'
 import { getLevelForXp, getLevelProgress, getNextLevel } from '../lib/xp'
 import { BADGE_DEFS } from '../lib/badges'
 import { isSoundsEnabled, setSoundsEnabled } from '../lib/sounds'
+import { LEARNING_STYLES } from '../data/topics'
 
 export default function Profile() {
   const { user, updateUser } = useStore()
@@ -13,6 +14,7 @@ export default function Profile() {
   const nextLevel = getNextLevel(user.xp)
   const levelProgress = getLevelProgress(user.xp)
   const [showGoalPicker, setShowGoalPicker] = useState(false)
+  const [showStylePicker, setShowStylePicker] = useState(false)
   const [showReset, setShowReset] = useState(false)
   const [selectedBadge, setSelectedBadge] = useState(null)
   const [soundOn, setSoundOn] = useState(isSoundsEnabled)
@@ -159,6 +161,15 @@ export default function Profile() {
               />
             </div>
             <button
+              onClick={() => setShowStylePicker(!showStylePicker)}
+              className="w-full px-4 py-3 flex items-center justify-between"
+            >
+              <span className="text-sm text-ink">Learning Style</span>
+              <span className="text-sm text-ink-secondary">
+                {LEARNING_STYLES.find(s => s.id === user.learningStyle)?.label || 'Analogies & Metaphors'}
+              </span>
+            </button>
+            <button
               onClick={() => setShowGoalPicker(!showGoalPicker)}
               className="w-full px-4 py-3 flex items-center justify-between"
             >
@@ -182,6 +193,30 @@ export default function Profile() {
             </button>
           </div>
         </div>
+
+        {/* Learning Style Picker */}
+        {showStylePicker && (
+          <div className="bg-surface rounded-xl border border-line p-4 shadow-theme">
+            <p className="text-sm font-semibold text-ink mb-3">How do you learn best?</p>
+            {LEARNING_STYLES.map(style => (
+              <button
+                key={style.id}
+                onClick={() => { updateUser({ learningStyle: style.id }); setShowStylePicker(false) }}
+                className={`w-full text-left px-4 py-3 rounded-lg border mb-2 transition-all flex items-start gap-3 ${
+                  user.learningStyle === style.id
+                    ? 'border-primary bg-primary/10'
+                    : 'border-line'
+                }`}
+              >
+                <span className="text-lg mt-0.5">{style.icon}</span>
+                <div>
+                  <p className="text-sm font-medium text-ink">{style.label}</p>
+                  <p className="text-xs text-ink-secondary">{style.desc}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Goal Picker */}
         {showGoalPicker && (
