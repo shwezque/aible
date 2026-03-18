@@ -244,3 +244,266 @@ Fix the 4 P1 bugs (estimated ~30-45 minutes), then run `/prep-launch` to deploy.
 2. Deduplicate `completedLessons` in `completeLesson` and skip XP on replay
 3. Consume streak freeze (set available=false) and add weekly reset
 4. Add `canPlayLesson` guard in Lesson component
+
+---
+
+## Checkpoint — 2026-03-18 (end of session)
+
+### Current Stage
+Launch prep — QA complete, all P1 bugs fixed, code pushed to GitHub, Vercel deployment in progress.
+
+### Current Objective
+Get the prototype live on Vercel and verify it works on mobile.
+
+### Completed This Session
+
+| # | Task | Status |
+|---|------|--------|
+| 1 | `/qa-app` — Full QA pass against PRD + UX spec (93% pass rate, 87/94 checks) | Done |
+| 2 | Fixed BUG-01: Streak UTC → local dates (`toLocaleDateString('en-CA')`) | Done |
+| 3 | Fixed BUG-02: Deduplicated completedLessons + skip XP on replay | Done |
+| 4 | Fixed BUG-03: Streak freeze consumption + app-open check + weekly reset | Done |
+| 5 | Fixed BUG-04: canPlayLesson guard in Lesson component | Done |
+| 6 | `/prep-launch` — Launch checklist, vercel.json SPA rewrite | Done |
+| 7 | Git repo initialized, initial commit + bug fix commit | Done |
+| 8 | GitHub repo created: github.com/shwezque/aible | Done |
+| 9 | Fixed Vercel deploy: downgraded Vite 8→6, removed unused supabase dep | Done |
+| 10 | Pushed to GitHub (2 commits on main) | Done |
+
+### Key Outputs Produced
+
+| File | Description |
+|------|-------------|
+| docs/qa-checklist.md | 94-check pass/fail QA checklist across 10 areas |
+| docs/bug-log.md | 8 bugs (4 P1 fixed, 4 P2 open) with file:line refs |
+| docs/launch-checklist.md | Build status, deployment config, go/no-go recommendation |
+| app/vercel.json | SPA rewrite rule for client-side routing |
+| .gitignore | Root-level gitignore |
+
+### Files Modified This Session
+
+| File | Change |
+|------|--------|
+| app/src/store/useStore.js | BUG-01 (local dates), BUG-02 (replay dedup), BUG-03 (streak freeze) |
+| app/src/screens/Lesson.jsx | BUG-04 (canPlayLesson guard) |
+| app/package.json | Removed @supabase/supabase-js, downgraded Vite 8→6, added engines field |
+| app/package-lock.json | Regenerated with compatible deps |
+
+### Commands Used
+- `/resume-work` — Resumed from prior session
+- `/qa-app` — Full QA pass
+- `/prep-launch` — Launch readiness check
+- `/checkpoint` — This checkpoint
+
+### Agents Used
+- **qa-reviewer** (×3, parallel): Onboarding/routing, lesson player/exercises, state/gamification/screens
+
+### Skills Used
+- `qa-ship` (via `/qa-app`)
+- `frontend-prototype-build` (via `/prep-launch`)
+
+### Key Decisions
+1. **All 4 P1 bugs fixed before deploy** — streak dates, XP farming, streak freeze, free tier bypass
+2. **4 P2 bugs deferred** — badge modal, "You learned" copy, onboarding subheader, module progress count
+3. **Vite downgraded 8→6** — @tailwindcss/vite doesn't support Vite 8 yet; Vercel build requires compatible versions
+4. **Supabase dependency removed** — unused in prototype (auth simulated with localStorage)
+5. **GitHub repo: public** — github.com/shwezque/aible
+
+### Assumptions
+- Vercel will auto-deploy from GitHub on push (if project is connected)
+- Vite 6 + Tailwind 4 + React 19 is a stable combination for Vercel's Node 20 environment
+- The 4 remaining P2 bugs are acceptable for a prototype demo
+
+### Open Questions
+- **Vercel deployment status:** Build was failing due to Vite 8 peer dep conflict — fix pushed, needs verification that redeploy succeeds
+- **Custom domain:** Not configured yet. Vercel will assign a random `.vercel.app` subdomain
+- **Mascot design:** Still using emoji placeholders
+- **Sound effects:** Not implemented
+- **Supabase/Stripe integration:** Deferred for real auth/payments
+
+### Risks/Blockers
+- **Vercel deploy may need manual retriggering** — if the project wasn't connected to GitHub before the fix push, user needs to redeploy from dashboard
+- **No mobile browser testing yet** — all QA was code-level review, not runtime visual testing on a phone
+
+### Exact Next Step
+Verify the Vercel deployment succeeds. If it fails, check the build logs. If it succeeds, test the live URL on a mobile device (Chrome DevTools mobile emulator or real phone).
+
+### Exact First Command or Prompt to Run Next
+Check Vercel dashboard for deploy status. If deployed, open the live URL on mobile and test:
+1. Onboarding → first lesson → signup flow
+2. Page refresh on /home (verify SPA rewrite works)
+3. Complete 3 lessons to verify free tier limit triggers paywall
+
+---
+
+## Logo Concept Development — 2026-03-18
+
+### Command: `/create-logo-concepts`
+
+### Output: 5 logo concept territories for Aible
+
+| # | Concept | Type | Core Idea |
+|---|---------|------|-----------|
+| 1 | The Spark | Icon + wordmark | Lowercase "a" with a rising spark/dot — moment of understanding |
+| 2 | The Doorway | Abstract mark + wordmark | Two rounded rectangles forming an open gateway — access and invitation |
+| 3 | AI Highlight | Custom wordmark | "aible" with subtle "ai" typographic distinction — name does the work |
+| 4 | The Level-Up | Icon + wordmark | Ascending rounded steps — progress and gamification |
+| 5 | The Monogram Shield | Lettermark | "A" in squircle with arrow crossbar — badge you earn |
+
+### Recommendation: Concept 1 — The Spark
+
+The lowercase "a" with a rising spark element. Captures the emotional core of the product (the moment AI clicks), scales from favicon to billboard, avoids all AI/tech cliches, and works natively as an app icon. Runner-up: Concept 3 (AI Highlight) for its pure simplicity.
+
+### Design Direction
+- Rounded, warm geometry (soft terminals, generous curves)
+- Color: warm coral or indigo "a" with amber/coral spark accent
+- Typography: rounded sans-serif, all lowercase, medium weight
+- Monochrome: spark distinguished by position/shape, not color
+
+### Agents Used
+- **logo-designer** — full concept development and design handoff
+
+### Next Recommended Action
+Choose a concept direction, then generate visual explorations (image generation or designer sketches) to test proportions, spark placement, color, and typeface options
+
+---
+
+## Product Pivot: Exercise-Based → Chat-Based Learning — 2026-03-18
+
+### What Changed
+Aible pivots from Duolingo-style discrete exercises to conversational learning with specialized AI tutors. The core learning mechanic is now chat — users learn by talking to named AI tutors (Ada, Sage, Max) who teach through Socratic dialogue, Concept Cards, and inline Quick Checks. Gamification (XP, streaks, badges, levels) stays but rewires to session-based triggers.
+
+### Agents Used (4, parallel)
+- **researcher** — Benchmarked 8 chat-based learning products (Khanmigo, Pi.ai, Character.AI, Duolingo Max, Q-Chat, Socratic, Replika, Brilliant)
+- **strategist** — Redefined positioning, tutor structure, session model, gamification, freemium
+- **ux-designer** — Redesigned all screens for chat model (3-tab nav, chat interface, topic dashboard, bottom sheets)
+- **backend-architect** — Defined data model, system prompts, API proxy, localStorage strategy, migration path
+
+### Alignment Decisions Made
+| Decision | Resolution |
+|----------|-----------|
+| Tutor names | Ada, Max, Sage, Nova, Blake, Muse (UX designer's set) |
+| MVP scope | 3 tutors (Ada, Sage, Max), 3 "Coming Soon" |
+| XP values | Session +25, Quick Check +10, concept +5, daily bonus +5, new topic +10, chapter +50, mastery +100 |
+| Freemium unit | 2 sessions/day (not message-based) |
+| LLM for MVP | Claude Haiku with per-topic system prompts via Vercel Edge Function |
+| Navigation | 3 tabs (Learn, Today, Profile) — down from 4 |
+| Topic switching | Bottom sheet (not sidebar) |
+
+### Documents Updated
+| Document | Status |
+|----------|--------|
+| product-strategy-v2.md | **New** — canonical strategy for chat model |
+| prd.md | **Rewritten** — 9 features for chat-based MVP |
+| ux-spec.md | **Rewritten** — 12 screens, chat interface spec, 8 message types |
+| screen-map.md | **Rewritten** — hierarchy, 4 flows, bottom sheet inventory |
+| data-model.md | **Rewritten** — 6 entities, localStorage schema, migration path |
+| tech-spec.md | **Rewritten** — API proxy, 3 hooks, system prompts, response parsing |
+| research-benchmark.md | **V2 addendum** — 8 chat-based products, table stakes, anti-patterns |
+| inspiration-notes.md | **V2 addendum** — 7 new patterns, updated design principles |
+
+### What Gets Cut
+- Discrete exercise types (Prompt Builder, Output Judge, Fill-in-the-Blank, Real-World Scenario)
+- Linear lesson path with nodes
+- 192 pre-authored exercises
+- Practice Tab, Badges Tab (absorbed into chat and Profile)
+- Lesson Complete screen (replaced by Session Celebration)
+
+### What Stays
+- XP, streaks, badges, levels, daily goals (rewired to sessions)
+- Mobile-first, purple primary, warm tone
+- Freemium model
+- "Be AI-able" tagline
+- Vercel deployment
+
+### Open Questions
+- Existing exercise-based codebase needs full rebuild for chat model
+- System prompts need authoring and testing for 3 MVP tutors
+- ANTHROPIC_API_KEY needed as Vercel env var
+- Logo direction still in exploration (separate from this pivot)
+
+### Exact Next Step
+**`/build-app`** — Rebuild the prototype from scratch for the chat-based model. Start with M1 (Foundation): scaffolding, topic definitions with system prompts, Vercel Edge Function proxy, routing, useStore/useChat/useTopics hooks.
+
+---
+
+## Checkpoint — 2026-03-18 (v2 Build + QA Complete)
+
+- **Current stage:** QA complete, fix-then-ship recommended
+- **Current objective:** Fix 5 P1 bugs, then deploy v2 chat-based prototype
+
+- **Completed in this session:**
+  1. `/build-app` — Full v2 chat-based prototype built (prior context, carried forward)
+  2. `/qa-app` — Systematic QA review: 73/86 checks passed (85%)
+  3. Created docs/qa-checklist.md — v2 checklist covering all 12 QA areas
+  4. Created docs/bug-log.md — 12 bugs (5 P1, 3 P2, 4 P3) with file:line refs and fixes
+  5. Production build verified clean (427 KB JS, 38 KB CSS)
+
+- **Key outputs produced:**
+  | File | Description |
+  |------|-------------|
+  | docs/qa-checklist.md | 86-check QA against PRD/UX spec, 85% pass rate |
+  | docs/bug-log.md | 12 prioritized bugs with exact file refs and fix instructions |
+  | app/src/pages/Welcome.jsx | S-02 onboarding welcome |
+  | app/src/pages/PickTopic.jsx | S-03 topic selection |
+  | app/src/pages/Home.jsx | S-05 Learn tab with Continue Card + topic grid |
+  | app/src/pages/Chat.jsx | S-06 core chat screen (all 8 message types) |
+  | app/src/pages/Today.jsx | S-08 daily dashboard |
+  | app/src/pages/Profile.jsx | S-09 stats, badges, settings |
+  | app/src/pages/Paywall.jsx | Freemium upgrade screen |
+  | app/src/hooks/useStore.jsx | User state with XP, streaks, badges, daily counter |
+  | app/src/hooks/useChat.js | Chat state + streaming API integration |
+  | app/src/hooks/useTopics.js | Topic data merged with user progress |
+  | app/src/lib/parseResponse.js | [QUIZ], [CONCEPT], [SUGGESTIONS] tag parser |
+  | app/src/lib/xp.js | XP actions, 10 levels, threshold functions |
+  | app/src/lib/badges.js | 9 badge definitions with trigger checks |
+  | app/src/lib/storage.js | localStorage helpers + message pruning |
+  | app/src/data/topics.js | 6 topics (3 MVP + 3 Coming Soon) with system prompts |
+  | app/src/components/TabBar.jsx | 3-tab bottom nav |
+  | app/src/components/CelebrationOverlay.jsx | Session celebration overlay |
+  | app/src/components/TopicIndex.jsx | Bottom sheet topic switcher |
+  | app/src/components/TopicCard.jsx | Topic card with progress ring |
+  | app/src/components/XpToast.jsx | XP float animation |
+  | app/src/components/ProgressRing.jsx | SVG circular progress |
+  | app/api/chat.js | Vercel Edge Function — Claude Haiku proxy |
+  | app/src/App.jsx | Routing with TabLayout + onboarding logic |
+
+- **Files to review next:**
+  1. app/src/pages/Chat.jsx — Fix BUG-01 (avatar), BUG-02 (completeSession), BUG-03 (summary card)
+  2. app/src/hooks/useChat.js — Fix BUG-05 (concept XP), BUG-07 (raw tags during stream)
+  3. app/src/components/CelebrationOverlay.jsx — Fix BUG-04 (add confetti)
+
+- **Commands used:** `/build-app` (prior session), `/qa-app`, `/checkpoint`
+- **Agents used:** None this session (direct review)
+- **Skills used:** `qa-ship` (via `/qa-app`)
+
+- **Key decisions:**
+  1. v2 chat-based prototype built on top of existing scaffolding (old v1 files still present but unused)
+  2. QA review done as code inspection against specs (no runtime mobile testing yet)
+  3. 5 P1 bugs identified as minimum fixes before launch
+  4. S-01 Splash and S-04 Preferences screens skipped — acceptable for MVP
+  5. S-11 Badge Detail and S-12 Goal Picker implemented inline rather than as bottom sheets
+
+- **Assumptions:**
+  - ANTHROPIC_API_KEY will be set as Vercel env var before deploy
+  - Claude Haiku reliably produces [QUIZ], [CONCEPT], [SUGGESTIONS] tags per system prompt
+  - Old v1 files (screens/, store/, data/constants.js, data/lessons.js) can be deleted before deploy
+  - The existing Confetti.jsx from v1 can be reused in CelebrationOverlay
+
+- **Open questions:**
+  - Should old v1 files be cleaned up before or after fixing P1 bugs?
+  - Has ANTHROPIC_API_KEY been added to Vercel project settings?
+  - Is the Vercel project still connected to the GitHub repo?
+  - Should P2 BUG-07 (raw tags visible during streaming) be promoted to P1? It's visually jarring.
+
+- **Risks/blockers:**
+  - No runtime testing done yet — all QA was code review
+  - API key needed for chat to work on deployed version
+  - Old v1 code adds ~50KB to bundle unnecessarily
+
+- **Exact next recommended action:** Fix the 5 P1 bugs (BUG-01 through BUG-05), then run `/prep-launch`
+
+- **Exact first prompt or command to run next:**
+  ```
+  Fix all P1 bugs from docs/bug-log.md, then run /prep-launch
+  ```
