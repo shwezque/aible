@@ -848,3 +848,101 @@ Production build passes clean: 466 KB JS, 47 KB CSS (gzipped: 146 KB + 9 KB)
   ```
   Commit and push all changes, then verify the deploy
   ```
+
+---
+
+## Workflow System Update — 2026-03-19
+
+### What Changed
+Global Claude Workflow OS updated to reflect premium product quality standards, stronger workflow routing, and design system expectations learned from Aible build sessions. All changes are global (reusable) — no project-specific contamination.
+
+### Files Updated
+
+| File | Change |
+|------|--------|
+| ~/.claude/CLAUDE.md | Added "Product quality standards" (visual, copy, build, design gate) and "Universal rules" sections. Updated user context. |
+| ~/.claude/agents/orchestrator.md | Filled 2 stub workflows (deck-creation, research-only). Added 2 new workflows (branding, polish-pass). Slimmed prototype-app to avoid duplicating command detail. Added quality governance. |
+| ~/.claude/agents/frontend-builder.md | Added "Visual quality standards" section: design system, tokens, typography, motion, icons, dark/light, interaction feedback. Updated anti-patterns. |
+| ~/.claude/agents/ux-designer.md | Strengthened design principles (visual hierarchy, motion, no-emoji). Added design system foundation as Step 9. Updated quality bar. |
+| ~/.claude/agents/qa-reviewer.md | Added "Design quality" as review area #10 (tokens, icons, motion, dark mode, component consistency). Raised quality bar language. |
+| ~/.claude/agents/growth-copywriter.md | Added no-emoji and retention-aware copy principles. Added emoji anti-pattern. |
+| ~/.claude/skills/mobile-consumer-ux/SKILL.md | Expanded visual tone step to include design system foundation (tokens, type scale, spacing, icons, motion). Updated outputs. |
+| ~/.claude/skills/frontend-prototype-build/SKILL.md | Expanded polish step with design system consistency, motion standards, dark/light mode, tap feedback. |
+| ~/.claude/skills/qa-ship/SKILL.md | Added "Design quality" review area with 7 premium criteria. Updated output format. |
+
+### What Was Not Changed (and why)
+- **strategist.md** — Strategy definition doesn't need visual quality standards
+- **researcher.md** — Research methodology is solid and unrelated to design quality
+- **backend-architect.md** — Technical role with no UI concerns
+- **logo-designer.md** — Already comprehensive and well-crafted
+- **product-strategy, benchmark-research, state-and-persistence, consumer-product-copy skills** — Solid as-is; relevant standards covered at agent level
+- **All 12 commands** — Thin routing files that delegate to agents; agents now carry the standards
+
+---
+
+## Handoff — 2026-03-19 (Workflow System Optimization Complete)
+
+- **Current stage:** Post-optimization. App code committed and pushed (`059922b`). Workflow system updated globally. Execution log has a minor uncommitted update.
+- **Current objective:** Resume product work on Aible — runtime QA on mobile, deploy verification, or next feature work.
+
+- **Completed in this session:**
+  1. Committed and pushed all premium UI/UX redesign changes (`059922b` — Icon.jsx, TutorAvatar.jsx, 18 modified files)
+  2. Global Workflow OS optimization — systematic audit and update of 9 files across agents, skills, and CLAUDE.md:
+     - Added product quality standards and universal rules to CLAUDE.md
+     - Filled 2 stub workflows (deck-creation, research-only), added 2 new (branding, polish-pass, workflow-optimization)
+     - Added visual quality standards to frontend-builder agent
+     - Strengthened UX designer with design system deliverables
+     - Added design quality review area to QA reviewer
+     - Added no-emoji and retention-aware principles to copywriter
+     - Updated 3 skills (mobile-consumer-ux, frontend-prototype-build, qa-ship) with premium criteria
+  3. Simplified orchestrator traceability from 16 fields to 5 (what, plan, done, agents, next)
+  4. Created `/polish-app` command for design polish workflow
+  5. Created workflow-architect agent, workflow-optimization skill, and `/optimize-workflow` command
+
+- **Key files created/updated:**
+  | File | Status |
+  |------|--------|
+  | ~/.claude/CLAUDE.md | Updated — quality standards, universal rules, user context |
+  | ~/.claude/agents/orchestrator.md | Updated — 6 workflow families, simplified traceability |
+  | ~/.claude/agents/frontend-builder.md | Updated — visual quality standards section |
+  | ~/.claude/agents/ux-designer.md | Updated — design system, motion, hierarchy |
+  | ~/.claude/agents/qa-reviewer.md | Updated — design quality review area |
+  | ~/.claude/agents/growth-copywriter.md | Updated — no-emoji, retention copy |
+  | ~/.claude/agents/workflow-architect.md | NEW — workflow system specialist |
+  | ~/.claude/skills/workflow-optimization/SKILL.md | NEW — audit and optimization methodology |
+  | ~/.claude/skills/mobile-consumer-ux/SKILL.md | Updated — design system in visual tone |
+  | ~/.claude/skills/frontend-prototype-build/SKILL.md | Updated — premium polish standards |
+  | ~/.claude/skills/qa-ship/SKILL.md | Updated — design quality area |
+  | ~/.claude/commands/polish-app.md | NEW — design polish workflow entry point |
+  | ~/.claude/commands/optimize-workflow.md | NEW — workflow optimization entry point |
+  | docs/execution-log.md | Updated — this entry |
+
+- **Decisions made:**
+  1. All workflow updates are global (no Aible-specific contamination)
+  2. Traceability simplified to 5 fields — what, plan, done, agents, next
+  3. Orchestrator slimmed: references commands instead of duplicating their stage detail
+  4. New workflow families added: branding, polish-pass, workflow-optimization (alongside existing prototype-app, deck-creation, research-only)
+  5. Quality standards live in CLAUDE.md as single source of truth; agents reinforce, not duplicate
+
+- **Assumptions:**
+  - Global workflow changes will improve output quality in future conversations without re-explanation
+  - Workflow-optimization is a periodic maintenance task, not continuous
+  - Existing 12 commands remain thin routing files — standards enforced at agent level
+
+- **Open questions:**
+  - Should `/create-deck` command be created now or when first needed?
+  - Should a curriculum-designer agent be formalized for educational products?
+  - Old v1 Aible files (screens/, store/, data/constants.js) still in repo — cleanup still pending
+  - No runtime mobile QA done on the premium redesign yet
+
+- **Risks/blockers:**
+  - docs/execution-log.md has a small uncommitted diff (this entry + workflow system note)
+  - No mobile testing of premium UI changes on actual device
+  - Vercel deploy from `059922b` not yet verified
+
+- **Exact next recommended action:** Test the deployed app on mobile, run `/qa-app` against the premium redesign, then fix any issues found.
+
+- **Exact first prompt or command to run next:**
+  ```
+  /qa-app
+  ```
