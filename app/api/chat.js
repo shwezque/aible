@@ -20,6 +20,18 @@ export default async function handler(req) {
       )
     }
 
+    // Ensure alternating roles (Anthropic requires this)
+    const cleaned = []
+    for (const m of messages.slice(-20)) {
+      const msg = { role: m.role, content: m.content }
+      if (cleaned.length > 0 && cleaned[cleaned.length - 1].role === msg.role) {
+        // Merge consecutive same-role messages
+        cleaned[cleaned.length - 1].content += '\n' + msg.content
+      } else {
+        cleaned.push(msg)
+      }
+    }
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
@@ -28,13 +40,10 @@ export default async function handler(req) {
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify({
-        model: 'claude-3-5-haiku-20241022',
+        model: 'claude-haiku-4-5-20251001',
         max_tokens: 1024,
         system: systemPrompt || 'You are a helpful AI tutor.',
-        messages: messages.slice(-20).map(m => ({
-          role: m.role,
-          content: m.content,
-        })),
+        messages: cleaned,
         stream: true,
       }),
     })

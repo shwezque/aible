@@ -46,7 +46,7 @@ const TABS = [
 
 export default function TabBar({ streak = 0 }) {
   return (
-    <nav className="bg-white border-t border-gray-200 flex items-center justify-around px-2 shrink-0"
+    <nav className="bg-surface border-t border-line flex items-center justify-around px-2 shrink-0"
       style={{ height: 56, paddingBottom: 'env(safe-area-inset-bottom, 0px)' }}
     >
       {TABS.map((tab) => (
@@ -55,7 +55,7 @@ export default function TabBar({ streak = 0 }) {
           to={tab.to}
           className={({ isActive }) =>
             `flex flex-col items-center gap-0.5 py-1.5 px-4 transition-colors ${
-              isActive ? 'text-primary' : 'text-gray-400'
+              isActive ? 'text-primary' : 'text-ink-tertiary'
             }`
           }
         >

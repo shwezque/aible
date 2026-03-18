@@ -234,17 +234,21 @@ export function useChat(topicId, { onConceptDiscovered } = {}) {
   const retryLast = useCallback(() => {
     const lastUserMsg = [...messages].reverse().find(m => m.role === 'user')
     if (lastUserMsg) {
-      // Remove last failed messages
+      // Remove the failed assistant messages AND the user message (sendMessage will re-add it)
       setSession(prev => {
         const msgs = [...prev.messages]
         while (msgs.length > 0 && msgs[msgs.length - 1].role !== 'user') {
           msgs.pop()
         }
-        return { ...prev, messages: msgs }
+        if (msgs.length > 0) msgs.pop() // Remove the user message too
+        const updated = { ...prev, messages: msgs }
+        persist(updated)
+        return updated
       })
-      sendMessage(lastUserMsg.content)
+      // Small delay to let state update before resending
+      setTimeout(() => sendMessage(lastUserMsg.content), 50)
     }
-  }, [messages, sendMessage])
+  }, [messages, sendMessage, persist])
 
   const addSystemMessage = useCallback((msg) => {
     addMessage({

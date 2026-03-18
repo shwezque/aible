@@ -34,19 +34,19 @@ export default function Home() {
   const comingSoon = topics.filter(t => t.isComingSoon)
 
   return (
-    <div className="bg-gray-50 min-h-full">
+    <div className="bg-bg min-h-full">
       {/* Header */}
-      <div className="bg-white px-5 py-4 flex items-center justify-between border-b border-gray-100">
+      <div className="bg-surface px-5 py-4 flex items-center justify-between border-b border-line-subtle">
         <h1 className="text-xl font-bold text-primary">aible</h1>
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1 text-sm">
             <span className="text-amber-500">⭐</span>
-            <span className="font-semibold text-gray-700">{user.xp}</span>
+            <span className="font-semibold text-ink">{user.xp}</span>
           </div>
           {user.streak > 0 && (
             <div className="flex items-center gap-1 text-sm">
               <span className="text-orange-500">🔥</span>
-              <span className="font-semibold text-gray-700">{user.streak}</span>
+              <span className="font-semibold text-ink">{user.streak}</span>
             </div>
           )}
         </div>
@@ -81,25 +81,25 @@ export default function Home() {
 
         {/* Daily Goal Mini-Bar */}
         <div
-          className="bg-white rounded-xl border border-gray-100 p-3 flex items-center gap-3 cursor-pointer"
+          className="bg-surface rounded-xl border border-line-subtle p-3 flex items-center gap-3 cursor-pointer"
           onClick={() => navigate('/today')}
         >
           <div className="flex-1">
-            <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+            <div className="h-2 bg-surface-alt rounded-full overflow-hidden">
               <div
                 className="h-full bg-secondary rounded-full transition-all duration-500"
                 style={{ width: `${Math.min((user.dailySessionsCompleted / (user.dailyGoal || 1)) * 100, 100)}%` }}
               />
             </div>
           </div>
-          <p className="text-[13px] text-gray-500 shrink-0">
+          <p className="text-[13px] text-ink-secondary shrink-0">
             {user.dailySessionsCompleted} of {user.dailyGoal || 1} today
           </p>
         </div>
 
         {/* Topic Grid */}
         <div>
-          <h2 className="text-base font-semibold text-gray-900 mb-3">Your Topics</h2>
+          <h2 className="text-base font-semibold text-ink mb-3">Your Topics</h2>
           <div className="grid grid-cols-2 gap-3">
             {mvpTopics.map(topic => (
               <TopicCard key={topic.id} topic={topic} onTap={() => handleTopicTap(topic.id)} />
@@ -112,9 +112,9 @@ export default function Home() {
 
         {/* Empty state prompt */}
         {!activeTopic && (
-          <div className="bg-purple-50 rounded-xl p-4 border border-purple-100">
-            <p className="text-sm text-purple-800 font-medium">Pick a topic and start chatting.</p>
-            <p className="text-xs text-purple-600 mt-1">Your AI tutor is ready.</p>
+          <div className="bg-primary/10 rounded-xl p-4 border border-primary/20">
+            <p className="text-sm text-primary font-medium">Pick a topic and start chatting.</p>
+            <p className="text-xs text-primary-light mt-1">Your AI tutor is ready.</p>
           </div>
         )}
       </div>
