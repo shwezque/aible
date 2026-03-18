@@ -1,3 +1,4 @@
+import Icon from './Icon'
 import ProgressRing from './ProgressRing'
 
 function timeAgo(dateStr) {
@@ -13,22 +14,22 @@ function timeAgo(dateStr) {
 }
 
 export default function TopicCard({ topic, onTap }) {
-  const { name, icon, tutorName, color, isComingSoon, progressPercent, progress, conceptMap } = topic
+  const { name, iconId, tutorName, color, isComingSoon, progressPercent, progress, conceptMap } = topic
   const coveredCount = progress?.conceptsCovered?.length || 0
   const totalConcepts = conceptMap?.length || 0
   const lastActive = timeAgo(progress?.lastActiveAt)
 
   if (isComingSoon) {
     return (
-      <div className="bg-surface rounded-xl border border-line-subtle p-4 opacity-50 shadow-theme">
-        <div className="text-2xl mb-2">{icon}</div>
-        <p className="text-[15px] font-semibold text-ink-tertiary">{name}</p>
-        <p className="text-xs text-ink-tertiary mt-0.5">with {tutorName}</p>
+      <div className="bg-surface rounded-2xl border border-line-subtle p-4 opacity-40 shadow-theme">
+        <div className="w-9 h-9 rounded-xl bg-surface-alt flex items-center justify-center mb-3">
+          <Icon name={iconId} size={18} className="text-ink-tertiary" />
+        </div>
+        <p className="text-[15px] font-semibold text-ink-tertiary tracking-tight">{name}</p>
+        <p className="text-caption text-ink-tertiary mt-0.5">with {tutorName}</p>
         <div className="mt-3 flex items-center gap-1.5">
-          <svg className="w-3.5 h-3.5 text-line" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clipRule="evenodd" />
-          </svg>
-          <span className="text-[11px] text-ink-tertiary font-medium">Coming Soon</span>
+          <Icon name="lock" size={13} className="text-ink-tertiary" />
+          <span className="text-micro text-ink-tertiary">Coming Soon</span>
         </div>
       </div>
     )
@@ -37,21 +38,26 @@ export default function TopicCard({ topic, onTap }) {
   return (
     <button
       onClick={onTap}
-      className="bg-surface rounded-xl border border-line-subtle p-4 text-left hover:border-line active:bg-surface-alt transition-all w-full shadow-theme"
+      className="bg-surface rounded-2xl border border-line-subtle p-4 text-left transition-all w-full shadow-theme tap-target hover:shadow-theme-md"
     >
       <div className="flex items-start justify-between">
-        <div className="text-2xl">{icon}</div>
+        <div
+          className="w-9 h-9 rounded-xl flex items-center justify-center"
+          style={{ backgroundColor: color + '14' }}
+        >
+          <Icon name={iconId} size={18} className="text-ink" style={{ color }} />
+        </div>
         {progressPercent > 0 && (
           <ProgressRing percent={progressPercent} size={28} strokeWidth={2.5} color={color} />
         )}
       </div>
-      <p className="text-[15px] font-semibold text-ink mt-2">{name}</p>
-      <p className="text-xs mt-0.5" style={{ color }}>with {tutorName}</p>
-      <div className="mt-2">
+      <p className="text-[15px] font-semibold text-ink mt-2.5 tracking-tight">{name}</p>
+      <p className="text-caption mt-0.5" style={{ color }}>with {tutorName}</p>
+      <div className="mt-2.5">
         {coveredCount > 0 ? (
-          <p className="text-[11px] text-ink-secondary">{coveredCount} of {totalConcepts} concepts</p>
+          <p className="text-[12px] text-ink-secondary">{coveredCount} of {totalConcepts} concepts</p>
         ) : (
-          <span className="inline-block text-[11px] font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded-full">
+          <span className="inline-block text-[11px] font-semibold text-primary bg-primary/8 px-2.5 py-0.5 rounded-full">
             New
           </span>
         )}

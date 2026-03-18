@@ -4,7 +4,7 @@ export const LEARNING_STYLES = [
     id: 'metaphor',
     label: 'Analogies & Metaphors',
     desc: 'Explain new ideas using things I already understand',
-    icon: '🪞',
+    iconId: 'style-metaphor',
     prompt: `## Learning Style: Analogies & Metaphors
 - ALWAYS anchor every new concept to a familiar real-world analogy before giving the technical explanation.
 - Use vivid, concrete comparisons ("Think of a neural network like a team of workers in a factory…").
@@ -15,7 +15,7 @@ export const LEARNING_STYLES = [
     id: 'stories',
     label: 'Stories & Examples',
     desc: 'Show me real cases and walk me through them',
-    icon: '📖',
+    iconId: 'style-stories',
     prompt: `## Learning Style: Stories & Examples
 - Lead with a concrete, real-world story or case study before explaining the concept.
 - Use narrative structure: situation → problem → how the concept applies → outcome.
@@ -26,7 +26,7 @@ export const LEARNING_STYLES = [
     id: 'stepbystep',
     label: 'Step-by-Step',
     desc: 'Break it down into clear, logical steps',
-    icon: '🪜',
+    iconId: 'style-stepbystep',
     prompt: `## Learning Style: Step-by-Step
 - Break every concept into numbered, sequential steps.
 - Start from first principles and build up — never skip intermediate reasoning.
@@ -38,7 +38,7 @@ export const LEARNING_STYLES = [
     id: 'socratic',
     label: 'Guided Discovery',
     desc: 'Ask me questions that help me figure it out myself',
-    icon: '🧭',
+    iconId: 'style-socratic',
     prompt: `## Learning Style: Guided Discovery (Socratic)
 - Instead of explaining directly, ask a thought-provoking question that leads the user toward the answer.
 - When the user answers, build on their reasoning — affirm what's right, gently redirect what's off.
@@ -50,7 +50,7 @@ export const LEARNING_STYLES = [
     id: 'visual',
     label: 'Visual & Mnemonics',
     desc: 'Give me mental models and memory tricks',
-    icon: '🧠',
+    iconId: 'style-visual',
     prompt: `## Learning Style: Visual Mental Models & Mnemonics
 - Create vivid mental images for every concept ("Picture a funnel where data flows in at the top…").
 - Use spatial language: "layers," "flows," "branches," "maps."
@@ -62,7 +62,7 @@ export const LEARNING_STYLES = [
     id: 'eli5',
     label: 'Plain & Simple',
     desc: 'Explain it like I have zero background',
-    icon: '💡',
+    iconId: 'style-eli5',
     prompt: `## Learning Style: Plain & Simple (ELI5)
 - Use the simplest possible language. No jargon, no acronyms, no assumed knowledge.
 - If you must use a technical term, immediately define it in parentheses in everyday words.
@@ -139,7 +139,7 @@ export const TOPICS = [
     name: 'AI Basics',
     tutorName: 'Ada',
     subtitle: 'What AI actually is and isn\'t',
-    icon: '🤖',
+    iconId: 'topic-ai-basics',
     color: '#7C3AED',
     difficulty: 'beginner',
     isComingSoon: false,
@@ -182,7 +182,7 @@ ${BASE_INSTRUCTIONS}`,
     name: 'Prompting',
     tutorName: 'Sage',
     subtitle: 'Get better results from ChatGPT & friends',
-    icon: '✨',
+    iconId: 'topic-prompting',
     color: '#14B8A6',
     difficulty: 'beginner',
     isComingSoon: false,
@@ -225,7 +225,7 @@ ${BASE_INSTRUCTIONS}`,
     name: 'AI at Work',
     tutorName: 'Max',
     subtitle: 'Use AI tools in your job today',
-    icon: '💼',
+    iconId: 'topic-ai-work',
     color: '#3B82F6',
     difficulty: 'beginner',
     isComingSoon: false,
@@ -268,7 +268,7 @@ ${BASE_INSTRUCTIONS}`,
     name: 'AI Ethics',
     tutorName: 'Nova',
     subtitle: 'Navigate AI responsibly',
-    icon: '⚖️',
+    iconId: 'topic-ai-ethics',
     color: '#F43F5E',
     difficulty: 'intermediate',
     isComingSoon: true,
@@ -282,7 +282,7 @@ ${BASE_INSTRUCTIONS}`,
     name: 'AI for Business',
     tutorName: 'Blake',
     subtitle: 'Strategic AI for your business',
-    icon: '📊',
+    iconId: 'topic-ai-business',
     color: '#F59E0B',
     difficulty: 'intermediate',
     isComingSoon: true,
@@ -296,7 +296,7 @@ ${BASE_INSTRUCTIONS}`,
     name: 'AI Creative Tools',
     tutorName: 'Muse',
     subtitle: 'Create with AI',
-    icon: '🎨',
+    iconId: 'topic-ai-creative',
     color: '#8B5CF6',
     difficulty: 'intermediate',
     isComingSoon: true,

@@ -1,9 +1,13 @@
 import { useNavigate } from 'react-router-dom'
+import { motion } from 'framer-motion'
 import { useStore } from '../hooks/useStore'
 import { useTopics } from '../hooks/useTopics'
-import { getLevelForXp } from '../lib/xp'
+import { getLevelForXp, getLevelProgress, getNextLevel } from '../lib/xp'
+import Icon from '../components/Icon'
 import TopicCard from '../components/TopicCard'
-import logoFull from '../assets/logo-full.png'
+import { useTheme } from '../hooks/useTheme'
+import logoMark from '../assets/logo-mark.png'
+import logoMarkWhite from '../assets/logo-mark-white.png'
 
 function timeAgo(dateStr) {
   if (!dateStr) return ''
@@ -20,8 +24,11 @@ function timeAgo(dateStr) {
 export default function Home() {
   const navigate = useNavigate()
   const { user, canStartSession } = useStore()
+  const { resolved: theme } = useTheme()
   const { topics, activeTopic } = useTopics(user.topicProgress)
   const level = getLevelForXp(user.xp)
+  const levelProgress = getLevelProgress(user.xp)
+  const nextLevel = getNextLevel(user.xp)
 
   const handleTopicTap = (topicId) => {
     if (!canStartSession) {
@@ -33,90 +40,138 @@ export default function Home() {
 
   const mvpTopics = topics.filter(t => !t.isComingSoon)
   const comingSoon = topics.filter(t => t.isComingSoon)
+  const goalProgress = Math.min((user.dailySessionsCompleted / (user.dailyGoal || 1)) * 100, 100)
+  const goalMet = user.dailySessionsCompleted >= (user.dailyGoal || 1)
 
   return (
     <div className="bg-bg min-h-full">
       {/* Header */}
-      <div className="bg-surface px-5 py-4 flex items-center justify-between border-b border-line-subtle">
-        <img src={logoFull} alt="aible" className="h-7" />
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1 text-sm">
-            <span className="text-accent">⭐</span>
-            <span className="font-semibold text-ink">{user.xp}</span>
-          </div>
-          {user.streak > 0 && (
-            <div className="flex items-center gap-1 text-sm">
-              <span className="text-orange-500">🔥</span>
-              <span className="font-semibold text-ink">{user.streak}</span>
+      <div className="bg-surface px-5 pt-4 pb-3">
+        <div className="flex items-center justify-between mb-4">
+          <img src={theme === 'dark' ? logoMarkWhite : logoMark} alt="aible" className="h-7" />
+          <div className="flex items-center gap-3">
+            {user.streak > 0 && (
+              <div className="flex items-center gap-1.5 bg-accent/10 rounded-full px-2.5 py-1">
+                <Icon name="flame" size={14} className="text-accent" />
+                <span className="text-[13px] font-bold text-accent">{user.streak}</span>
+              </div>
+            )}
+            <div className="flex items-center gap-1.5 bg-primary/8 rounded-full px-2.5 py-1">
+              <Icon name="diamond" size={13} className="text-primary" />
+              <span className="text-[13px] font-bold text-primary">{user.xp}</span>
             </div>
-          )}
+          </div>
+        </div>
+
+        {/* Level Progress */}
+        <div className="bg-surface-alt rounded-xl p-3">
+          <div className="flex items-center justify-between mb-1.5">
+            <span className="text-caption text-ink-secondary">Level {level.level} — {level.name}</span>
+            <span className="text-[12px] text-ink-tertiary">{user.xp} / {nextLevel.xp} XP</span>
+          </div>
+          <div className="h-1.5 bg-line rounded-full overflow-hidden">
+            <motion.div
+              className="h-full bg-primary rounded-full"
+              initial={{ width: 0 }}
+              animate={{ width: `${levelProgress * 100}%` }}
+              transition={{ duration: 0.8, ease: 'easeOut' }}
+            />
+          </div>
         </div>
       </div>
 
-      <div className="px-5 py-4 space-y-5">
+      <div className="px-5 py-5 space-y-5">
         {/* Continue Card */}
         {activeTopic && (
-          <button
+          <motion.button
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
             onClick={() => handleTopicTap(activeTopic.id)}
-            className="w-full bg-gradient-to-r from-primary to-primary-dark rounded-xl p-4 flex items-center gap-3 text-left active:scale-[0.98] transition-transform"
+            className="w-full bg-gradient-to-br from-primary to-primary-dark rounded-2xl p-5 flex items-center gap-4 text-left tap-target shadow-theme-md"
           >
             <div
-              className="w-10 h-10 rounded-full flex items-center justify-center text-white text-lg font-bold shrink-0"
-              style={{ backgroundColor: activeTopic.color + '80' }}
+              className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
+              style={{ backgroundColor: 'rgba(255,255,255,0.15)' }}
             >
-              {activeTopic.icon}
+              <Icon name={activeTopic.iconId} size={20} className="text-white" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-white font-semibold text-base">
+              <p className="text-white font-semibold text-[15px] tracking-tight">
                 Continue: {activeTopic.name}
               </p>
-              <p className="text-white/70 text-[13px] mt-0.5">
-                Last session: {timeAgo(activeTopic.progress?.lastActiveAt)}
+              <p className="text-white/55 text-[13px] mt-0.5">
+                {timeAgo(activeTopic.progress?.lastActiveAt) || 'Ready to start'}
               </p>
             </div>
-            <svg className="w-5 h-5 text-white/70 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
-          </button>
+            <Icon name="chevron-right" size={18} className="text-white/50 shrink-0" />
+          </motion.button>
         )}
 
         {/* Daily Goal Mini-Bar */}
-        <div
-          className="bg-surface rounded-xl border border-line-subtle p-3 flex items-center gap-3 cursor-pointer"
+        <button
+          className="w-full bg-surface rounded-2xl border border-line-subtle p-4 flex items-center gap-4 tap-target shadow-theme"
           onClick={() => navigate('/today')}
         >
           <div className="flex-1">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-caption text-ink-secondary">
+                {goalMet ? 'Goal complete' : 'Daily Goal'}
+              </span>
+              <span className="text-[12px] text-ink-tertiary">
+                {user.dailySessionsCompleted}/{user.dailyGoal || 1}
+              </span>
+            </div>
             <div className="h-2 bg-surface-alt rounded-full overflow-hidden">
-              <div
-                className="h-full bg-secondary rounded-full transition-all duration-500"
-                style={{ width: `${Math.min((user.dailySessionsCompleted / (user.dailyGoal || 1)) * 100, 100)}%` }}
+              <motion.div
+                className="h-full rounded-full"
+                style={{ backgroundColor: goalMet ? '#22c55e' : '#14b8a6' }}
+                initial={{ width: 0 }}
+                animate={{ width: `${goalProgress}%` }}
+                transition={{ duration: 0.6, ease: 'easeOut' }}
               />
             </div>
           </div>
-          <p className="text-[13px] text-ink-secondary shrink-0">
-            {user.dailySessionsCompleted} of {user.dailyGoal || 1} today
-          </p>
-        </div>
+          <Icon name="chevron-right" size={16} className="text-ink-tertiary shrink-0" />
+        </button>
 
         {/* Topic Grid */}
         <div>
-          <h2 className="text-base font-semibold text-ink mb-3">Your Topics</h2>
+          <h2 className="text-title text-ink mb-3">Your Topics</h2>
           <div className="grid grid-cols-2 gap-3">
-            {mvpTopics.map(topic => (
-              <TopicCard key={topic.id} topic={topic} onTap={() => handleTopicTap(topic.id)} />
+            {mvpTopics.map((topic, i) => (
+              <motion.div
+                key={topic.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.05, duration: 0.3 }}
+              >
+                <TopicCard topic={topic} onTap={() => handleTopicTap(topic.id)} />
+              </motion.div>
             ))}
-            {comingSoon.map(topic => (
-              <TopicCard key={topic.id} topic={topic} />
+            {comingSoon.map((topic, i) => (
+              <motion.div
+                key={topic.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: (mvpTopics.length + i) * 0.05, duration: 0.3 }}
+              >
+                <TopicCard topic={topic} />
+              </motion.div>
             ))}
           </div>
         </div>
 
-        {/* Empty state prompt */}
+        {/* Empty state */}
         {!activeTopic && (
-          <div className="bg-primary/10 rounded-xl p-4 border border-primary/20">
-            <p className="text-sm text-primary font-medium">Pick a topic and start chatting.</p>
-            <p className="text-xs text-primary-light mt-1">Your AI tutor is ready.</p>
-          </div>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="bg-primary/6 rounded-2xl p-5 border border-primary/10"
+          >
+            <p className="text-[15px] text-primary font-medium tracking-tight">Pick a topic and start chatting.</p>
+            <p className="text-[13px] text-primary/60 mt-1">Your AI tutor is ready.</p>
+          </motion.div>
         )}
       </div>
     </div>

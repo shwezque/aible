@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { TOPICS } from '../data/topics'
 import { useStore } from '../hooks/useStore'
+import Icon from '../components/Icon'
 
 export default function PickTopic() {
   const [selected, setSelected] = useState(null)
@@ -28,7 +29,7 @@ export default function PickTopic() {
         <motion.h1
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-xl font-bold text-ink"
+          className="text-headline text-ink"
         >
           What are you most curious about?
         </motion.h1>
@@ -41,39 +42,42 @@ export default function PickTopic() {
             return (
               <motion.button
                 key={topic.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05 }}
+                transition={{ delay: i * 0.05, duration: 0.3 }}
                 onClick={() => isActive && setSelected(topic.id)}
                 disabled={!isActive}
-                className={`relative text-left p-4 rounded-xl border transition-all ${
+                className={`relative text-left p-4 rounded-2xl border transition-all tap-target ${
                   isSelected
-                    ? 'border-primary bg-primary/10 ring-2 ring-primary'
+                    ? 'border-primary bg-primary/8 ring-2 ring-primary'
                     : isActive
-                    ? 'border-line bg-surface hover:border-ink-tertiary active:bg-surface-alt'
-                    : 'border-line-subtle bg-bg opacity-50'
+                    ? 'border-line-subtle bg-surface hover:border-line shadow-theme'
+                    : 'border-line-subtle bg-bg opacity-40'
                 }`}
               >
                 <div
                   className="absolute left-0 top-3 bottom-3 w-1 rounded-r-full"
                   style={{ backgroundColor: topic.color }}
                 />
-                <div className="text-2xl mb-2 ml-1">{topic.icon}</div>
-                <p className={`text-[15px] font-semibold ml-1 ${isActive ? 'text-ink' : 'text-ink-tertiary'}`}>
+                <div
+                  className="w-9 h-9 rounded-xl flex items-center justify-center mb-2.5 ml-1"
+                  style={{ backgroundColor: topic.color + '14' }}
+                >
+                  <Icon name={topic.iconId} size={18} style={{ color: topic.color }} />
+                </div>
+                <p className={`text-[15px] font-semibold ml-1 tracking-tight ${isActive ? 'text-ink' : 'text-ink-tertiary'}`}>
                   {topic.name}
                 </p>
-                <p className={`text-[13px] mt-0.5 ml-1 ${isActive ? 'text-ink-secondary' : 'text-ink-tertiary'}`}>
+                <p className={`text-caption mt-0.5 ml-1 ${isActive ? 'text-ink-secondary' : 'text-ink-tertiary'}`}>
                   {topic.isComingSoon ? 'Coming Soon' : topic.subtitle}
                 </p>
                 {isSelected && (
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    className="absolute top-2 right-2 w-6 h-6 bg-primary rounded-full flex items-center justify-center"
+                    className="absolute top-2.5 right-2.5 w-6 h-6 bg-primary rounded-lg flex items-center justify-center"
                   >
-                    <svg className="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                    </svg>
+                    <Icon name="check" size={14} className="text-white" strokeWidth={3} />
                   </motion.div>
                 )}
               </motion.button>
@@ -81,7 +85,7 @@ export default function PickTopic() {
           })}
         </div>
 
-        <p className="text-[13px] text-ink-tertiary text-center mt-4">
+        <p className="text-caption text-ink-tertiary text-center mt-5">
           Pick one to start — you can explore others anytime
         </p>
       </div>
@@ -90,9 +94,9 @@ export default function PickTopic() {
         <button
           onClick={handleStart}
           disabled={!selected}
-          className={`w-full font-semibold text-lg py-3.5 rounded-xl transition-all ${
+          className={`w-full font-semibold text-[17px] py-4 rounded-2xl transition-all tap-target ${
             selected
-              ? 'bg-primary text-white hover:bg-primary-dark active:scale-[0.98]'
+              ? 'bg-primary text-white shadow-theme-md'
               : 'bg-surface-alt text-ink-tertiary cursor-not-allowed'
           }`}
         >
