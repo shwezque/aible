@@ -3,6 +3,7 @@ import { useStore } from '../hooks/useStore'
 import { useTopics } from '../hooks/useTopics'
 import { getLevelForXp } from '../lib/xp'
 import TopicCard from '../components/TopicCard'
+import logoFull from '../assets/logo-full.png'
 
 function timeAgo(dateStr) {
   if (!dateStr) return ''
@@ -37,10 +38,10 @@ export default function Home() {
     <div className="bg-bg min-h-full">
       {/* Header */}
       <div className="bg-surface px-5 py-4 flex items-center justify-between border-b border-line-subtle">
-        <h1 className="text-xl font-bold text-primary">aible</h1>
+        <img src={logoFull} alt="aible" className="h-7" />
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1 text-sm">
-            <span className="text-amber-500">⭐</span>
+            <span className="text-accent">⭐</span>
             <span className="font-semibold text-ink">{user.xp}</span>
           </div>
           {user.streak > 0 && (

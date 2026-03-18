@@ -37,17 +37,17 @@
 
 /* ─── Tailwind theme tokens ─── */
 @theme {
-  /* Brand colors (static) */
-  --color-primary: #6366f1;
-  --color-primary-light: #818cf8;
-  --color-primary-dark: #4f46e5;
-  --color-accent: #f59e0b;
-  --color-accent-light: #fbbf24;
+  /* Brand colors (from Aible logo) */
+  --color-primary: #2B4C5E;
+  --color-primary-light: #3A6478;
+  --color-primary-dark: #1E3A4C;
+  --color-accent: #F4A478;
+  --color-accent-light: #F7B892;
   --color-secondary: #14b8a6;
   --color-success: #22c55e;
   --color-error: #ef4444;
-  --color-streak: #ef4444;
-  --color-xp: #f59e0b;
+  --color-streak: #F4A478;
+  --color-xp: #F4A478;
 
   /* Adaptive colors (swap with theme) */
   --color-bg: var(--s-bg);

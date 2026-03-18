@@ -1,5 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { useStore } from '../hooks/useStore'
+import logoIcon from '../assets/logo-icon.png'
 
 export default function Paywall() {
   const navigate = useNavigate()
@@ -24,9 +25,7 @@ export default function Paywall() {
       <div className="flex-1 px-6 pb-10 flex flex-col">
         {/* Hero */}
         <div className="text-center pt-6 pb-8">
-          <div className="w-16 h-16 bg-gradient-to-br from-primary to-primary-dark rounded-2xl flex items-center justify-center mx-auto mb-4">
-            <span className="text-white text-3xl font-bold">a</span>
-          </div>
+          <img src={logoIcon} alt="Aible" className="w-16 h-16 rounded-2xl mx-auto mb-4" />
           <h1 className="text-2xl font-bold text-ink">Unlock Aible Pro</h1>
           <p className="text-base text-ink-secondary mt-2">Keep the momentum going with unlimited learning.</p>
         </div>
