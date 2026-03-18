@@ -360,10 +360,12 @@ export default function Chat() {
             content = <SessionSummaryCard metadata={msg.metadata} />
           } else if (msg.role === 'assistant') {
             // Strip raw tags from display content (BUG-07)
+            // Also strip partial/incomplete tags that appear during streaming
             const displayText = msg.content
-              .replace(/\[QUIZ\][\s\S]*?\[\/QUIZ\]/g, '')
-              .replace(/\[CONCEPT\][\s\S]*?\[\/CONCEPT\]/g, '')
-              .replace(/\[SUGGESTIONS\][\s\S]*?\[\/SUGGESTIONS\]/g, '')
+              .replace(/\[QUIZ\][\s\S]*?(\[\/QUIZ\]|$)/g, '')
+              .replace(/\[CONCEPT\][\s\S]*?(\[\/CONCEPT\]|$)/g, '')
+              .replace(/\[SUGGESTIONS\][\s\S]*?(\[\/SUGGESTIONS\]|$)/g, '')
+              .replace(/\{[^}]*$/g, '')
               .trim()
             if (!displayText) return null
             content = <AIBubble content={displayText} color={topic.color} tutorName={topic.tutorName} />
