@@ -3,14 +3,14 @@ export const BADGE_DEFS = [
     id: 'first-steps',
     name: 'First Steps',
     description: 'Complete your first chat session',
-    icon: '👋',
+    iconId: 'badge-first-steps',
     check: (user) => (user.topicProgress && Object.values(user.topicProgress).some(t => t.sessionsCompleted >= 1)),
   },
   {
     id: 'curious-mind',
     name: 'Curious Mind',
     description: 'Ask 10 questions across all topics',
-    icon: '🧠',
+    iconId: 'badge-curious-mind',
     check: (user) => {
       const total = Object.values(user.topicProgress || {}).reduce((sum, t) => sum + (t.totalMessages || 0), 0)
       return total >= 20 // ~10 user messages = ~20 total
@@ -20,49 +20,49 @@ export const BADGE_DEFS = [
     id: 'deep-diver',
     name: 'Deep Diver',
     description: 'Master 5 concepts in a single topic',
-    icon: '🤿',
+    iconId: 'badge-deep-diver',
     check: (user) => Object.values(user.topicProgress || {}).some(t => (t.conceptsMastered?.length || 0) >= 5),
   },
   {
     id: 'quiz-ace',
     name: 'Quiz Ace',
     description: 'Get 5 Quick Checks correct in a row',
-    icon: '🎯',
+    iconId: 'badge-quiz-ace',
     check: (user) => (user.quizStreak || 0) >= 5,
   },
   {
     id: 'on-a-roll',
     name: 'On a Roll',
     description: 'Maintain a 3-day streak',
-    icon: '🔥',
+    iconId: 'badge-on-a-roll',
     check: (user) => (user.streak || 0) >= 3,
   },
   {
     id: 'week-warrior',
     name: 'Week Warrior',
     description: 'Maintain a 7-day streak',
-    icon: '⚔️',
+    iconId: 'badge-week-warrior',
     check: (user) => (user.streak || 0) >= 7,
   },
   {
     id: 'concept-master',
     name: 'Concept Master',
     description: 'Master all concepts in any topic',
-    icon: '🏆',
+    iconId: 'badge-concept-master',
     check: () => false, // checked dynamically with topic data
   },
   {
     id: 'rising-star',
     name: 'Rising Star',
     description: 'Reach Level 3',
-    icon: '⭐',
+    iconId: 'badge-rising-star',
     check: (user) => (user.level || 1) >= 3,
   },
   {
     id: 'explorer',
     name: 'Explorer',
     description: 'Start all 3 MVP topics',
-    icon: '🧭',
+    iconId: 'badge-explorer',
     check: (user) => {
       const started = Object.values(user.topicProgress || {}).filter(t => t.status !== 'not_started')
       return started.length >= 3
@@ -79,7 +79,7 @@ export function checkNewBadges(user) {
         id: def.id,
         name: def.name,
         description: def.description,
-        icon: def.icon,
+        iconId: def.iconId,
         earnedAt: new Date().toISOString(),
       })
     }

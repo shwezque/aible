@@ -1,4 +1,5 @@
 import { motion, AnimatePresence } from 'framer-motion'
+import Icon from './Icon'
 
 export default function XpToast({ amount, show, onDone }) {
   return (
@@ -11,8 +12,9 @@ export default function XpToast({ amount, show, onDone }) {
           transition={{ duration: 0.3, exit: { duration: 0.8 } }}
           className="fixed top-20 left-1/2 -translate-x-1/2 z-50 pointer-events-none"
         >
-          <div className="bg-primary text-white px-5 py-2.5 rounded-full font-bold text-lg shadow-lg flex items-center gap-1.5">
-            +{amount} XP ✨
+          <div className="bg-primary text-white px-5 py-2.5 rounded-full font-bold text-lg shadow-theme-lg flex items-center gap-2">
+            <Icon name="diamond" size={18} className="text-accent-light" />
+            +{amount} XP
           </div>
         </motion.div>
       )}

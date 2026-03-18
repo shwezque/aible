@@ -607,3 +607,244 @@ Aible pivots from Duolingo-style discrete exercises to conversational learning w
   ```
   Commit and push all changes, then test the deployed app on mobile
   ```
+
+---
+
+## Handoff — 2026-03-18 (Session Complete)
+
+- **Current stage:** Post-build — app is deployed and functional. Ready for QA + polish pass.
+- **Current objective:** Test the live app, run QA, fix issues, and prep for launch.
+
+- **Completed across all sessions:**
+  1. Full v2 chat-based prototype built (replaced v1 exercise-based app)
+  2. 3 MVP AI tutors (Ada, Sage, Max) + 3 Coming Soon placeholders
+  3. Vercel Edge Function API proxy to Claude Haiku (`claude-haiku-4-5-20251001`)
+  4. Fixed production API 400 error (deprecated model ID)
+  5. Fixed garbled AI responses (SSE streaming buffer fix)
+  6. Fixed duplicate message errors (alternating-role dedup in API handler)
+  7. Visual redesign: CSS custom property design system with light/dark mode
+  8. Theme toggle (Light/System/Dark) with localStorage persistence
+  9. Web Audio sound effects library
+  10. World-class Feynman-inspired system prompts for all tutors
+  11. 6 learning styles that dynamically modify system prompts
+  12. Learning style picker in onboarding + Profile settings
+  13. Custom markdown renderer for chat output (bold, italic, code, quotes, lists, headings)
+  14. System prompts encourage ASCII diagrams, tables, visual aids (not emojis)
+  15. Brand integration: Aible logos (6 variants), color scheme (dark teal #2B4C5E, peach #F4A478)
+  16. Local dev server (dev-server.js + Vite proxy) for testing without Vercel
+  17. All pages converted to semantic color tokens (zero hardcoded grays)
+  18. Gamification: XP, streaks, badges, daily goals, celebration overlay
+  19. Freemium: 2 free sessions/day, paywall, upgrade flow
+  20. Full onboarding: Welcome → Preferences (experience + learning style) → Pick Topic → Chat
+
+- **Key files (architecture):**
+  | Layer | File | Purpose |
+  |-------|------|---------|
+  | Entry | app/src/main.jsx | Router + ThemeProvider + StoreProvider |
+  | Routing | app/src/App.jsx | Routes, TabLayout, onboarding guard |
+  | State | app/src/hooks/useStore.jsx | User state (XP, streak, badges, settings) |
+  | Chat | app/src/hooks/useChat.js | SSE streaming + buildSystemPrompt |
+  | Topics | app/src/data/topics.js | 6 topics, 6 learning styles, system prompts |
+  | API | app/api/chat.js | Vercel Edge Function → Claude Haiku |
+  | Theme | app/src/hooks/useTheme.jsx | Light/System/Dark toggle |
+  | Design | app/src/index.css | CSS custom properties, all color tokens |
+  | Markdown | app/src/lib/renderMarkdown.jsx | Rich text in chat bubbles |
+  | Pages | app/src/pages/*.jsx | Welcome, Preferences, PickTopic, Home, Chat, Today, Profile, Paywall |
+
+- **Git state:** All committed and pushed. Branch `main` is up to date with `origin/main`. Build passes clean. Untracked: `.claude/`, `app/README.md`, `assets/` (source logo files — not needed in deploy).
+
+- **Commits (latest first):**
+  - `88db640` Brand integration, markdown renderer, visual aids, local dev setup
+  - `3cbbd72` World-class educator prompts + learning style settings
+  - `7efb0a4` Fix garbled AI responses: buffer SSE chunks properly
+  - `d1f8314` Visual redesign: dark mode, semantic tokens, sound effects, theme toggle
+  - `48de585` Aible v2: chat-based AI tutors with all QA bugs fixed
+  - `96486c5` Fix Vercel deploy: downgrade Vite 8→6
+  - `d87ab95` Initial commit
+
+- **Key decisions:**
+  1. Chat-based learning (not exercises) — validated by user as the right direction
+  2. Brand colors: dark teal `#2B4C5E` primary, peach `#F4A478` accent
+  3. Feynman-inspired educator framework with dynamic learning style injection
+  4. Custom markdown renderer (no react-markdown dependency)
+  5. Local dev: dev-server.js + Vite proxy (vercel dev had blank page issues)
+  6. SSE parser: buffer incomplete lines, never treat failed JSON as text
+  7. Lightweight custom approach everywhere — no heavy dependencies
+
+- **Assumptions:**
+  - ANTHROPIC_API_KEY is set in Vercel project environment variables
+  - Brand colors from logo PNGs are accurate
+  - Learning style is per-user (same across all tutors)
+  - `.env.local` is gitignored and never committed
+  - Old v1 files still in repo but unused (can be cleaned up)
+
+- **Open questions:**
+  - CTA button color consistency — some use accent (peach), some use primary (teal)
+  - Dark mode contrast with dark teal primary — needs real-device testing
+  - Old v1 files (screens/, store/, data/constants.js, data/lessons.js) — clean up before or after QA?
+  - Should dark mode use white logo variants automatically?
+
+- **Risks/blockers:**
+  - No runtime QA done yet — all previous QA was code inspection
+  - Dark teal on dark backgrounds may have contrast issues
+  - Bundle includes unused v1 code (~50KB)
+  - API rate limits not handled (no retry/backoff on 429)
+
+- **Exact next recommended action:** Run `/qa-app` to test the live deployed app against specs, then fix any issues found, then `/prep-launch` for final deploy checklist.
+
+- **Exact first prompt or command to run next:**
+  ```
+  /qa-app
+  ```
+
+---
+
+## Premium UI/UX Redesign — 2026-03-18
+
+### What Changed
+Complete visual overhaul and product polish pass to upgrade Aible from prototype to premium consumer app quality.
+
+### Design System Changes
+- **Typography:** Added 6-tier type scale (display/headline/title/body/caption/micro) with tighter tracking
+- **Color tokens:** Refined light/dark adaptive surfaces with improved contrast ratios
+- **Shadows:** 3-tier shadow system (theme/theme-md/theme-lg) tuned for both modes
+- **Border radius:** Standardized on rounded-2xl (16px) for cards, rounded-xl (12px) for icons
+- **Spacing:** Increased card padding (p-4 to p-5), header breathing room, consistent gaps
+- **Glass effect:** Added `glass` utility (backdrop-blur) for tab bar and chat headers
+- **Interaction states:** Added `tap-target` utility class for premium press feedback
+
+### Icon System
+- Created `/app/src/components/Icon.jsx` — centralized SVG icon system with 35+ icons
+- Replaced ALL emojis across the active app with clean monochrome SVG icons
+- Topics: chip, sparkles, briefcase, scale, chart-bar, palette
+- Badges: flag, lightbulb, layers, target, flame, shield, trophy, star, compass
+- Learning styles: arrow-path, book-open, list-bullet, compass, eye, bolt
+- UI: diamond (XP), flame (streak), lock, check, arrows, etc.
+
+### Component Upgrades
+- **TabBar:** Glass background, animated tab indicator (layoutId spring), streak badge as proper circle
+- **TopicCard:** Icon containers with tinted backgrounds, rounded-2xl, tighter type
+- **ProgressRing:** Fixed dark mode (was hardcoded #E5E7EB, now uses CSS var)
+- **CelebrationOverlay:** Removed all emojis, glass cards, diamond XP icon
+- **XpToast:** Replaced sparkle emoji with diamond icon
+- **TopicIndex:** Rounded-3xl sheet, icon containers, improved spacing
+
+### Page Redesigns
+- **Home:** Level progress bar in header, pill badges for XP/streak, animated topic grid entry, motion-animated progress bars
+- **Today:** Structured streak card (icon + number, no gradient), grid stats with icon accents, activity feed with icon containers
+- **Profile:** Rounded-2xl avatar, animated level bar, icon-based badges, chevron indicators on settings rows
+- **Chat:** Glass headers, icon-based send button (arrow-up), check-circle icons in quiz cards, themed text colors
+- **Welcome:** Logo mark + full wordmark, display typography, primary CTA (not accent)
+- **PickTopic:** Icon containers in cards, rounded-2xl, consistent check marks
+- **Preferences:** Step indicator dots, icon containers for learning styles
+- **Paywall:** Proper check/dash icons in feature comparison, motion animations
+
+### Motion & Transitions
+- Added page transitions via AnimatePresence on routes (fade + subtle y movement)
+- Tab content transitions with AnimatePresence mode="wait"
+- Animated tab indicator with spring physics (layoutId)
+- Motion-animated progress bars (level, daily goal)
+- Staggered topic card entry animations
+- Settings pickers use AnimatePresence for smooth open/close
+
+### Data Changes
+- `topics.js`: Replaced `icon` emoji field with `iconId` string on all topics and learning styles
+- `badges.js`: Replaced `icon` emoji field with `iconId` string on all badge definitions
+- Badge `checkNewBadges()` now stores `iconId` instead of emoji in earned badge objects
+
+### Files Created
+| File | Description |
+|------|-------------|
+| app/src/components/Icon.jsx | SVG icon system — 35+ icons with ICON_MAP aliasing |
+
+### Files Modified (15)
+| File | Changes |
+|------|---------|
+| app/src/index.css | Refined tokens, typography scale, glass utility, tap-target, new animations |
+| app/src/App.jsx | Page transitions (AnimatePresence), tab content transitions |
+| app/src/data/topics.js | `icon` → `iconId` on all 6 topics + 6 learning styles |
+| app/src/lib/badges.js | `icon` → `iconId` on all 9 badges |
+| app/src/components/TabBar.jsx | Glass bg, animated indicator, rounded streak badge |
+| app/src/components/TopicCard.jsx | Icon containers, improved spacing/radius |
+| app/src/components/ProgressRing.jsx | CSS var for track color (dark mode fix) |
+| app/src/components/CelebrationOverlay.jsx | Icon-based, glass cards, no emojis |
+| app/src/components/XpToast.jsx | Diamond icon instead of sparkle emoji |
+| app/src/components/TopicIndex.jsx | Icon containers, rounded sheet |
+| app/src/pages/Home.jsx | Level bar, pill badges, animated progress |
+| app/src/pages/Today.jsx | Structured streak, icon activity feed |
+| app/src/pages/Profile.jsx | Icon badges, animated level, chevron settings |
+| app/src/pages/Chat.jsx | Glass headers, icon buttons, themed quiz cards |
+| app/src/pages/Welcome.jsx | Dual logo, display type, primary CTA |
+| app/src/pages/PickTopic.jsx | Icon containers, rounded cards |
+| app/src/pages/Preferences.jsx | Step dots, icon learning styles |
+| app/src/pages/Paywall.jsx | Check/dash icons, motion entry |
+
+### Build Status
+Production build passes clean: 466 KB JS, 47 KB CSS (gzipped: 146 KB + 9 KB)
+
+---
+
+## Checkpoint — 2026-03-19 (Premium Polish + Tutor Avatars + Fixes)
+
+- **Current stage:** Active development — premium UI/UX redesign complete, tutor avatars created, multiple display bugs fixed. All changes uncommitted.
+- **Current objective:** Commit all changes, push, and deploy.
+
+- **Completed in this session:**
+  1. Premium UI/UX redesign — replaced ALL emojis with SVG icons, new typography scale, glass effects, animated transitions, refined dark/light tokens
+  2. Created centralized Icon system (`Icon.jsx`) with 35+ SVG icons and alias mapping
+  3. Created cartoon SVG avatar illustrations for 3 AI tutors (Ada, Sage, Max) in `TutorAvatar.jsx`
+  4. Fixed "Ai" capitalization bug — created `formatConceptName()` with acronym preservation (AI, LLM, ELI5)
+  5. Fixed `topic.subtitle.toLowerCase()` destroying "AI" capitalization — now only lowercases first character
+  6. Fixed Today activity feed showing raw topic IDs — now uses `getTopicById()` for proper display names
+  7. Fixed ProgressRing dark mode — track color now uses CSS variable instead of hardcoded `#E5E7EB`
+  8. Replaced Profile page initials avatar with inline SVG cartoon human placeholder
+  9. Home header logo switched to icon-only with theme-aware dark/white switching
+  10. Added AnimatePresence page transitions and spring-animated tab indicator
+  11. Glass effect on tab bar and chat headers
+  12. Added `tap-target` utility for premium press feedback
+
+- **Key outputs produced:**
+  | File | Description |
+  |------|-------------|
+  | app/src/components/Icon.jsx | NEW — Centralized SVG icon system, 35+ icons, alias mapping |
+  | app/src/components/TutorAvatar.jsx | NEW — Cartoon SVG avatars for Ada, Sage, Max + placeholder |
+  | 18 modified files | Full premium polish pass across all pages and components |
+
+- **Files to review next:**
+  1. All uncommitted changes — need commit and push
+  2. Test tutor avatars at different sizes on mobile
+  3. Verify dark mode contrast with all new token values
+
+- **Commands used:** npm run build, git status, git diff
+- **Agents used:** Explore agent (codebase audit), parallel build agents
+- **Skills used:** `/checkpoint`
+
+- **Key decisions:**
+  1. Inline SVG avatars (not image files) — zero external dependencies, instant load
+  2. Centralized Icon component with alias mapping — single source of truth for all icons
+  3. `formatConceptName()` with ACRONYMS map — extensible solution for display name formatting
+  4. 6-tier typography scale matching premium consumer apps
+  5. Glass + spring physics for premium feel without heavy animation libraries
+
+- **Assumptions:**
+  - All emoji removal is complete (no remaining emojis in active codebase)
+  - Tutor avatar designs match personality descriptions in system prompts
+  - Typography scale and spacing are appropriate for mobile viewport
+  - Brand colors (#2B4C5E primary, #F4A478 accent) work with all new token values
+
+- **Open questions:**
+  - Should tutor avatars animate (e.g., subtle idle animation in chat)?
+  - Are the 3 placeholder "coming soon" tutor avatars sufficient, or should they get unique silhouettes?
+  - Old v1 files still present in repo (screens/, store/, etc.) — cleanup needed
+
+- **Risks/blockers:**
+  - 20 files of uncommitted changes — need to commit before any context loss
+  - No runtime mobile testing done on the new design
+  - Bundle size increased slightly (472 KB JS) due to inline SVG avatar data
+
+- **Exact next recommended action:** Commit all changes with a descriptive message, push to main, verify Vercel deploy.
+
+- **Exact first prompt or command to run next:**
+  ```
+  Commit and push all changes, then verify the deploy
+  ```

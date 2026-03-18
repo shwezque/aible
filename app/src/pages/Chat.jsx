@@ -5,53 +5,53 @@ import { useChat } from '../hooks/useChat'
 import { useStore } from '../hooks/useStore'
 import { getTopicById } from '../data/topics'
 import { XP_ACTIONS } from '../lib/xp'
+import Icon from '../components/Icon'
 import XpToast from '../components/XpToast'
 import CelebrationOverlay from '../components/CelebrationOverlay'
 import TopicIndex from '../components/TopicIndex'
+import TutorAvatar from '../components/TutorAvatar'
 import RenderMarkdown from '../lib/renderMarkdown'
 
-function TutorAvatar({ color, name, size = 28 }) {
-  return (
-    <div
-      className="rounded-full flex items-center justify-center text-white font-semibold shrink-0"
-      style={{ width: size, height: size, backgroundColor: color, fontSize: size * 0.42 }}
-    >
-      {name?.[0] || '?'}
-    </div>
-  )
+const ACRONYMS = { ai: 'AI', llm: 'LLM', eli5: 'ELI5' }
+function formatConceptName(id) {
+  return id.replace(/-/g, ' ').replace(/\b\w+/g, w => ACRONYMS[w] || w.charAt(0).toUpperCase() + w.slice(1))
 }
 
 function SessionOpener({ topic }) {
   return (
-    <div className="flex flex-col items-center py-6 px-4">
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex flex-col items-center py-8 px-5"
+    >
       <TutorAvatar color={topic.color} name={topic.tutorName} size={48} />
-      <p className="text-base font-semibold mt-3 text-ink">
+      <p className="text-title mt-3 text-ink">
         Hey! I'm {topic.tutorName}, your {topic.name} tutor.
       </p>
-      <p className="text-sm text-ink-secondary mt-1 text-center">
-        Ready to explore {topic.subtitle.toLowerCase()}? Let's start with the basics.
+      <p className="text-caption text-ink-secondary mt-1 text-center">
+        Ready to explore {topic.subtitle.charAt(0).toLowerCase() + topic.subtitle.slice(1)}? Let's start with the basics.
       </p>
-      <div className="mt-4 w-full bg-surface rounded-xl border border-line p-3 shadow-theme">
-        <p className="text-[11px] font-semibold text-ink-tertiary uppercase tracking-wide">Today's goal</p>
-        <ul className="mt-2 space-y-1">
+      <div className="mt-5 w-full bg-surface rounded-2xl border border-line-subtle p-4 shadow-theme">
+        <p className="text-micro text-ink-tertiary mb-2.5">Today's goal</p>
+        <ul className="space-y-1.5">
           {(topic.conceptMap || []).slice(0, 3).map((c, i) => (
-            <li key={i} className="text-sm text-ink-secondary flex items-center gap-2">
+            <li key={i} className="text-[14px] text-ink-secondary flex items-center gap-2.5">
               <span className="w-1.5 h-1.5 rounded-full bg-secondary shrink-0" />
-              {c.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+              {formatConceptName(c)}
             </li>
           ))}
         </ul>
       </div>
-    </div>
+    </motion.div>
   )
 }
 
 function AIBubble({ content, color, tutorName }) {
   return (
-    <div className="flex gap-2 items-start px-4">
+    <div className="flex gap-2.5 items-start px-4">
       <TutorAvatar color={color} name={tutorName} size={28} />
       <div
-        className="bg-surface rounded-2xl px-3.5 py-2.5 max-w-[82%] border-l-3"
+        className="bg-surface rounded-2xl px-4 py-3 max-w-[82%] border-l-3 shadow-theme"
         style={{ borderLeftColor: color }}
       >
         <div className="text-[15px] leading-relaxed text-ink">
@@ -65,7 +65,7 @@ function AIBubble({ content, color, tutorName }) {
 function UserBubble({ content }) {
   return (
     <div className="flex justify-end px-4">
-      <div className="bg-primary text-white rounded-2xl px-3.5 py-2.5 max-w-[75%]">
+      <div className="bg-primary text-white rounded-2xl px-4 py-3 max-w-[75%]">
         <p className="text-[15px] leading-relaxed whitespace-pre-wrap">{content}</p>
       </div>
     </div>
@@ -84,36 +84,40 @@ function QuizCard({ metadata, onAnswer }) {
   }
 
   return (
-    <div className="mx-4 bg-surface rounded-xl border border-primary/30 p-4 shadow-theme">
-      <p className="text-[11px] font-semibold uppercase tracking-wider text-primary mb-2">Quick Check</p>
-      <p className="text-[15px] font-semibold text-ink mb-3">{question}</p>
+    <div className="mx-4 bg-surface rounded-2xl border border-primary/20 p-5 shadow-theme">
+      <p className="text-micro text-primary mb-2.5">Quick Check</p>
+      <p className="text-[15px] font-semibold text-ink mb-4">{question}</p>
       <div className="space-y-2">
         {(options || []).map((opt, i) => {
-          let bg = 'bg-surface', border = 'border-line', text = 'text-ink', icon = null
+          let cls = 'bg-surface border-line-subtle text-ink'
+          let icon = null
           if (answered) {
             if (i === correctIndex) {
-              bg = 'bg-teal-50'; border = 'border-teal-400'; text = 'text-teal-800'; icon = '✓'
+              cls = 'bg-secondary/8 border-secondary/40 text-secondary'; icon = 'check'
             } else if (i === selected && i !== correctIndex) {
-              bg = 'bg-accent/10'; border = 'border-amber-300'; text = 'text-accent'
+              cls = 'bg-accent/8 border-accent/40 text-accent'
             }
           }
           return (
             <button
               key={i}
               onClick={() => handleSelect(i)}
-              className={`w-full text-left px-4 py-3 rounded-lg border ${border} ${bg} ${text} text-sm transition-all flex items-center justify-between`}
+              className={`w-full text-left px-4 py-3 rounded-xl border ${cls} text-sm transition-all flex items-center justify-between tap-target`}
             >
               <span>{opt}</span>
-              {icon && <span className="text-teal-600 font-bold">{icon}</span>}
+              {icon && <Icon name={icon} size={16} className="text-secondary" strokeWidth={2.5} />}
             </button>
           )
         })}
       </div>
       {answered && selected === correctIndex && (
-        <div className="mt-3 text-sm text-teal-700 font-medium">+{xpValue || 10} XP — Nice work!</div>
+        <div className="mt-3 flex items-center gap-1.5">
+          <Icon name="diamond" size={14} className="text-primary" />
+          <span className="text-sm text-primary font-medium">+{xpValue || 10} XP</span>
+        </div>
       )}
       {answered && selected !== correctIndex && (
-        <div className="mt-3 text-sm text-amber-700">Not quite — the correct answer is highlighted above.</div>
+        <p className="mt-3 text-sm text-ink-secondary">Not quite — the correct answer is highlighted above.</p>
       )}
     </div>
   )
@@ -126,7 +130,7 @@ function SuggestionChips({ suggestions, onTap }) {
         <button
           key={i}
           onClick={() => onTap(s)}
-          className="shrink-0 px-4 py-2 rounded-full border border-line text-sm text-ink bg-surface hover:bg-surface-alt active:bg-surface-alt transition-colors"
+          className="shrink-0 px-4 py-2.5 rounded-full border border-line text-sm text-ink bg-surface tap-target transition-colors hover:bg-surface-alt"
         >
           {s}
         </button>
@@ -137,11 +141,11 @@ function SuggestionChips({ suggestions, onTap }) {
 
 function TypingIndicator({ color }) {
   return (
-    <div className="flex gap-2 items-start px-4">
-      <div className="bg-surface rounded-2xl px-4 py-3 border-l-3" style={{ borderLeftColor: color }}>
-        <div className="flex gap-1">
+    <div className="flex gap-2.5 items-start px-4">
+      <div className="bg-surface rounded-2xl px-4 py-3 border-l-3 shadow-theme" style={{ borderLeftColor: color }}>
+        <div className="flex gap-1.5">
           {[0, 150, 300].map(delay => (
-            <span key={delay} className="w-2 h-2 bg-ink-tertiary rounded-full animate-bounce" style={{ animationDelay: `${delay}ms` }} />
+            <span key={delay} className="w-1.5 h-1.5 bg-ink-tertiary rounded-full animate-bounce" style={{ animationDelay: `${delay}ms` }} />
           ))}
         </div>
       </div>
@@ -150,12 +154,12 @@ function TypingIndicator({ color }) {
 }
 
 function ConceptCard({ conceptId }) {
-  const title = conceptId.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+  const title = formatConceptName(conceptId)
   return (
-    <div className="mx-4 bg-surface rounded-xl border border-line p-4 shadow-theme">
-      <p className="text-[11px] font-semibold uppercase tracking-wider text-teal-600 mb-1">Key Concept</p>
-      <p className="text-base font-semibold text-ink">{title}</p>
-      <div className="mt-3 h-0.5 bg-teal-500 rounded-full w-12" />
+    <div className="mx-4 bg-surface rounded-2xl border border-line-subtle p-4 shadow-theme">
+      <p className="text-micro text-secondary mb-1.5">Key Concept</p>
+      <p className="text-title text-ink">{title}</p>
+      <div className="mt-3 h-0.5 bg-secondary rounded-full w-10" />
     </div>
   )
 }
@@ -163,20 +167,20 @@ function ConceptCard({ conceptId }) {
 function SessionSummaryCard({ metadata }) {
   const { conceptsCovered = [], quizTotal = 0, quizPassed = 0 } = metadata || {}
   return (
-    <div className="mx-4 bg-surface rounded-xl border-l-3 border-l-primary border border-line p-4 shadow-theme">
-      <p className="text-sm font-semibold text-primary mb-3">Session Summary</p>
+    <div className="mx-4 bg-surface rounded-2xl border-l-3 border-l-primary border border-line-subtle p-5 shadow-theme">
+      <p className="text-title text-primary mb-3">Session Summary</p>
       {conceptsCovered.length > 0 && (
-        <ul className="space-y-1.5 mb-3">
+        <ul className="space-y-2 mb-3">
           {conceptsCovered.map((c, i) => (
-            <li key={i} className="flex items-center gap-2 text-sm text-ink">
-              <span className="text-teal-500">✓</span>
-              {c.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase())}
+            <li key={i} className="flex items-center gap-2.5 text-sm text-ink">
+              <Icon name="check" size={14} className="text-secondary" strokeWidth={2.5} />
+              {formatConceptName(c)}
             </li>
           ))}
         </ul>
       )}
       {quizTotal > 0 && (
-        <p className="text-sm text-ink-secondary">Quick Checks: {quizPassed}/{quizTotal} correct</p>
+        <p className="text-caption text-ink-secondary">Quick Checks: {quizPassed}/{quizTotal} correct</p>
       )}
     </div>
   )
@@ -209,14 +213,12 @@ export default function Chat() {
   const [sessionXp, setSessionXp] = useState(0)
   const hasInitialized = useRef(false)
 
-  // Auto-scroll on new messages
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
   }, [messages, isStreaming])
 
-  // Send initial greeting if new conversation
   useEffect(() => {
     if (hasInitialized.current) return
     hasInitialized.current = true
@@ -243,18 +245,15 @@ export default function Chat() {
 
   const handleEndSession = () => {
     setShowOverflow(false)
-    // Gather session stats
     const conceptsCovered = session.conceptsCovered || []
     const quizMessages = messages.filter(m => m.type === 'quiz')
     const quizPassed = quizMessages.filter(m => m.metadata?.userAnswer === m.metadata?.correctIndex).length
     const xpForSession = XP_ACTIONS.SESSION_COMPLETE
     const totalEarned = sessionXp + xpForSession
 
-    // Call completeSession to award XP, update counters, check badges
     completeSession(topicId, totalEarned, conceptsCovered, [], quizPassed)
     setSessionXp(totalEarned)
 
-    // Inject summary card into chat
     addSystemMessage({
       content: '',
       type: 'summary',
@@ -266,7 +265,6 @@ export default function Chat() {
       },
     })
 
-    // Show celebration after a brief delay for the summary to render
     setTimeout(() => setShowCelebration(true), 400)
   }
 
@@ -287,44 +285,43 @@ export default function Chat() {
     return Math.round((covered / conceptCount) * 100)
   })()
 
-  // Filter out suggestion messages that have been acted on
   const lastSuggestionIdx = messages.findLastIndex(m => m.type === 'suggestion')
 
   return (
     <div className="h-full flex flex-col bg-chat-bg">
       {/* Top Bar */}
-      <div className="bg-surface border-b border-line px-4 py-3 flex items-center justify-between shrink-0 relative z-20">
-        <button onClick={() => navigate('/home')} className="text-ink-secondary p-1">
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
+      <div className="bg-surface/95 glass border-b border-line-subtle px-4 py-3 flex items-center justify-between shrink-0 relative z-20">
+        <button onClick={() => navigate('/home')} className="text-ink-secondary p-1.5 -ml-1 tap-target">
+          <Icon name="chevron-left" size={22} />
         </button>
-        <div className="text-center">
-          <p className="text-base font-semibold text-ink">{topic.tutorName}</p>
-          <p className="text-xs text-ink-secondary">{topic.name}</p>
+        <div className="flex items-center gap-2.5">
+          <TutorAvatar name={topic.tutorName} color={topic.color} size={32} />
+          <div>
+            <p className="text-[15px] font-semibold text-ink tracking-tight leading-tight">{topic.tutorName}</p>
+            <p className="text-[11px] text-ink-tertiary leading-tight">{topic.name}</p>
+          </div>
         </div>
-        <button className="text-ink-secondary p-1" onClick={() => setShowOverflow(!showOverflow)}>
-          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 5v.01M12 12v.01M12 19v.01" />
-          </svg>
+        <button className="text-ink-secondary p-1.5 -mr-1 tap-target" onClick={() => setShowOverflow(!showOverflow)}>
+          <Icon name="ellipsis-vertical" size={22} />
         </button>
         <AnimatePresence>
           {showOverflow && (
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="absolute right-4 top-14 bg-surface rounded-xl shadow-theme-md border border-line py-1 z-50 w-48"
+              initial={{ opacity: 0, scale: 0.95, y: -4 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -4 }}
+              transition={{ duration: 0.15 }}
+              className="absolute right-4 top-14 bg-surface rounded-2xl shadow-theme-lg border border-line-subtle py-1.5 z-50 w-48 overflow-hidden"
             >
               <button
                 onClick={() => { setShowOverflow(false); setShowTopicIndex(true) }}
-                className="w-full text-left px-4 py-2.5 text-sm text-ink hover:bg-surface-alt"
+                className="w-full text-left px-4 py-2.5 text-[15px] text-ink hover:bg-surface-alt transition-colors"
               >
                 Topic Index
               </button>
               <button
                 onClick={handleEndSession}
-                className="w-full text-left px-4 py-2.5 text-sm text-ink hover:bg-surface-alt"
+                className="w-full text-left px-4 py-2.5 text-[15px] text-ink hover:bg-surface-alt transition-colors"
               >
                 End Session
               </button>
@@ -334,10 +331,11 @@ export default function Chat() {
       </div>
 
       {/* Progress Bar */}
-      <div className="h-1 bg-surface-alt shrink-0">
-        <div
-          className="h-full bg-secondary rounded-r-full transition-all duration-500"
-          style={{ width: `${progressPercent}%` }}
+      <div className="h-0.5 bg-line-subtle shrink-0">
+        <motion.div
+          className="h-full bg-secondary rounded-r-full"
+          animate={{ width: `${progressPercent}%` }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
         />
       </div>
 
@@ -362,8 +360,6 @@ export default function Chat() {
           } else if (msg.type === 'summary') {
             content = <SessionSummaryCard metadata={msg.metadata} />
           } else if (msg.role === 'assistant') {
-            // Strip raw tags from display content (BUG-07)
-            // Also strip partial/incomplete tags that appear during streaming
             const displayText = msg.content
               .replace(/\[QUIZ\][\s\S]*?(\[\/QUIZ\]|$)/g, '')
               .replace(/\[CONCEPT\][\s\S]*?(\[\/CONCEPT\]|$)/g, '')
@@ -379,9 +375,9 @@ export default function Chat() {
           return (
             <motion.div
               key={msg.id}
-              initial={{ opacity: 0, y: 10 }}
+              initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.15 }}
+              transition={{ duration: 0.2, ease: 'easeOut' }}
             >
               {content}
             </motion.div>
@@ -391,18 +387,17 @@ export default function Chat() {
         {isStreaming && <TypingIndicator color={topic.color} />}
 
         {error && (
-          <div className="mx-4 bg-accent/10 border border-accent/30 rounded-xl p-3">
-            <p className="text-sm text-accent">{error}</p>
+          <div className="mx-4 bg-error/8 border border-error/15 rounded-2xl p-4">
+            <p className="text-sm text-error">{error}</p>
             <button
               onClick={() => sendMessage(messages.filter(m => m.role === 'user').pop()?.content || 'Hello')}
-              className="text-sm text-primary font-medium mt-1"
+              className="text-sm text-primary font-medium mt-2"
             >
               Tap to retry
             </button>
           </div>
         )}
 
-        {/* Starter suggestions if no messages */}
         {messages.length === 0 && topic.starterMessages && (
           <SuggestionChips
             suggestions={topic.starterMessages}
@@ -412,10 +407,10 @@ export default function Chat() {
       </div>
 
       {/* Input Area */}
-      <div className="bg-surface border-t border-line px-4 py-3 shrink-0">
+      <div className="bg-surface/95 glass border-t border-line-subtle px-4 py-3 shrink-0">
         <form
           onSubmit={(e) => { e.preventDefault(); handleSend() }}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2.5"
         >
           <input
             ref={inputRef}
@@ -424,33 +419,28 @@ export default function Chat() {
             onChange={(e) => setInputValue(e.target.value)}
             placeholder="Ask anything..."
             disabled={isStreaming}
-            className="flex-1 bg-surface-alt rounded-full px-4 py-2.5 text-sm text-ink placeholder:text-ink-tertiary outline-none focus:ring-2 focus:ring-primary/20"
+            className="flex-1 bg-surface-alt rounded-2xl px-4 py-2.5 text-[15px] text-ink placeholder:text-ink-tertiary outline-none focus:ring-2 focus:ring-primary/20 transition-shadow"
           />
           <button
             type="submit"
             disabled={!inputValue.trim() || isStreaming}
-            className={`w-9 h-9 rounded-full flex items-center justify-center shrink-0 transition-opacity ${
-              inputValue.trim() && !isStreaming ? 'bg-primary opacity-100' : 'bg-primary opacity-40'
+            className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all ${
+              inputValue.trim() && !isStreaming ? 'bg-primary opacity-100' : 'bg-primary opacity-30'
             }`}
           >
-            <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 12h14M12 5l7 7-7 7" />
-            </svg>
+            <Icon name="arrow-up" size={16} className="text-white" strokeWidth={2.5} />
           </button>
         </form>
       </div>
 
-      {/* XP Toast */}
       <XpToast amount={xpToast} show={xpToast !== null} onDone={() => setXpToast(null)} />
 
-      {/* Topic Index Bottom Sheet */}
       <TopicIndex
         show={showTopicIndex}
         onClose={() => setShowTopicIndex(false)}
         currentTopicId={topicId}
       />
 
-      {/* Celebration Overlay */}
       {showCelebration && (
         <CelebrationOverlay
           topicId={topicId}
