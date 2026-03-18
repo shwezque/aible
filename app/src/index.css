@@ -38,3 +38,17 @@ body {
   position: relative;
   overflow-x: hidden;
 }
+
+/* Hide scrollbar but keep scroll functionality */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Custom border-l-3 utility */
+.border-l-3 {
+  border-left-width: 3px;
+}

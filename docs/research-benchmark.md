@@ -1,7 +1,7 @@
-# Research Benchmark: Aible ("Duolingo for AI")
+# Research Benchmark: Aible
 
-**Date:** 2026-03-17
-**Purpose:** Competitive analysis and product mechanics research to inform Aible's design, gamification, and go-to-market.
+**Date:** 2026-03-17 (v1), 2026-03-18 (v2 addendum — chat-based pivot)
+**Purpose:** Competitive analysis and product mechanics research. V2 adds chat-based learning product analysis.
 
 ---
 
@@ -318,3 +318,51 @@
 7. **Mascot:** Create an Aible character with personality. Clever and slightly edgy, not childish. Appears throughout the app.
 8. **Adaptive:** Start with scenario complexity scaling (pre-authored Level 1-3 variants) + confidence self-rating. Add ML-driven adaptation in v2.
 9. **Content strategy:** Teach principles, not products. Plan for monthly content additions. Timeless prompt thinking > tool-specific walkthroughs.
+
+---
+
+## V2 Addendum: Chat-Based Learning Products (2026-03-18)
+
+> Research conducted for Aible's pivot from exercise-based to conversational learning with specialized AI tutors.
+
+### Products Analyzed
+
+| Product | Model | Key Insight for Aible |
+|---------|-------|----------------------|
+| **Khanmigo** (Khan Academy) | Socratic AI tutor within course structure | Gold standard for Socratic method. Never gives answers directly. Conversations grounded in specific learning objectives. |
+| **Pi.ai** (Inflection) | Free-form conversational AI companion | Best conversational warmth and follow-up questions. But no structure = no measurable learning. |
+| **Character.AI** | Multi-agent chat platform | Best multi-agent catalog UX (avatars, names, personalities). Proves users intuitively choose between specialized agents. |
+| **Duolingo Max** | Roleplay + Explain within exercise app | Scenario-based bounded conversations (5-10 exchanges). Post-conversation report cards. XP integration. |
+| **Quizlet Q-Chat** | Conversational study from flashcards | Best hybrid: naturally weaves quiz questions into conversation. Adaptive difficulty. Session summaries. |
+| **Socratic by Google** | Q&A homework help | Rich media in chat (diagrams, code). But transactional — no engagement loop. Discontinued. |
+| **Replika** | AI companion with structured activities | Structured activities embedded in chat. Daily check-ins. Relationship leveling. |
+| **Brilliant.org** | Interactive STEM learning | Concept-then-apply cycle. Visible skill trees. Daily challenges. |
+
+### Critical Finding
+
+**Every successful chat-based learning product imposes structure on conversation.** Pure free-form chat leads to pleasant but unproductive interaction. The winning formula: **guided conversation with visible progress** — structured enough for achievement, open enough for real dialogue.
+
+### Table Stakes for Chat-Based Learning
+
+1. **Conversation grounded in specific topics** (Khanmigo, Duolingo Max, Q-Chat)
+2. **Session boundaries** — beginnings and endings (Duolingo Max, Q-Chat, Brilliant)
+3. **Post-session feedback** — summaries, report cards (Duolingo Max, Q-Chat)
+4. **Embedded assessment** — knowledge checks within chat (Khanmigo, Q-Chat)
+5. **Topic/agent organization** — clear catalog to browse and switch (Character.AI, Q-Chat)
+6. **Memory and continuity** — AI remembers past sessions (Pi, Replika)
+
+### Differentiators (Opportunities)
+
+1. **Specialized tutors with distinct personalities** — no product has curated, pedagogical AI tutors with character
+2. **Gamification designed for conversation** — no one has cracked this well; XP/streaks bolted on, not native
+3. **Hybrid conversation + embedded quiz** — seamless checks that feel like dialogue, not tests
+4. **Daily AI-generated challenges** — fresh, bite-sized conversation prompts
+
+### Anti-Patterns to Avoid
+
+1. **Infinite scroll chat** — no session boundaries = no accomplishment
+2. **Lecture bot** — AI monologues kill engagement; Socratic method required
+3. **Generic tutor** — same voice across topics = hollow experience
+4. **XP for chatting** — rewards messages, not learning; easily gamed
+5. **No return hook** — without streaks/teasers/daily challenges, retention collapses
+6. **Text-only teaching** — AI topics need rich media (code blocks, diagrams, comparisons)

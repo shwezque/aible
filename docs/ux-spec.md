@@ -1,443 +1,380 @@
-# Aible — UX Specification
+# Aible UX Specification — Chat-Based Learning Model
 
-**Date:** 2026-03-17
-**Target:** Mobile web (375px–428px). Not designed for desktop.
+> Version 2.0 — Pivot from exercise-based to conversational learning with specialized AI tutors
+> Last updated: 2026-03-18
 
 ---
 
-## Navigation Model
+## 1. Design Philosophy
 
-**Bottom tab bar** — 4 tabs, always visible except during lessons.
+Aible is a **learning app that uses chat**, not a chat app that teaches. Every design decision reinforces this distinction.
 
-| Tab | Icon | Label | Destination |
-|-----|------|-------|-------------|
-| 1 | Path icon | Learn | Home / Learning Path |
-| 2 | Refresh/repeat icon | Practice | Review exercises from completed lessons |
-| 3 | Trophy icon | Badges | Achievement badges grid |
-| 4 | Person icon | Profile | Stats, settings, subscription |
+**Core tension to resolve:** Chat is freeform; learning requires structure. The design makes freeform conversation feel guided without feeling rigid.
 
-**During lessons:** Bottom nav is hidden. Full-screen takeover. Only close (X) at top-left and progress bar at top.
+**Design pillars:**
+- **Guided freedom** — The AI leads, but the user always has choices
+- **Visible progress** — Every conversation moves a needle the user can see
+- **Celebration density** — Micro-rewards every 60-90 seconds of engagement
+- **One-thumb comfort** — Everything reachable in the bottom 60% of the screen
+
+---
+
+## 2. Navigation Model
+
+### Bottom Tab Bar (3 tabs)
+
+Reduced from 4 to 3 tabs. Practice merges into chat. Badges move into Profile.
+
+| Tab | Icon | Label | Purpose |
+|-----|------|-------|---------|
+| 1 | GraduationCap | **Learn** | Topic selector / home dashboard |
+| 2 | Flame | **Today** | Daily goal tracker, streak, XP summary |
+| 3 | User | **Profile** | Stats, badges, settings, account |
 
 **Tab bar behavior:**
-- Active tab: filled icon + label + primary color
-- Inactive tabs: outline icon + muted color, no label
+- Always visible on Learn, Today, Profile screens
+- **Hidden during active chat sessions** — replaced by compact top bar
 - Height: 56px + safe area inset
-- Haptic feedback on tab switch (where supported)
+- Active tab: purple (#7C3AED) icon + label. Inactive: gray (#9CA3AF)
+- Streak flame on Today tab pulses orange when streak is active
+
+### In-Chat Navigation: Top Bar
+
+During chat, bottom tabs disappear. Top bar provides:
+- Left: Back arrow → Learn tab (chat state preserved)
+- Center: Tutor name + topic label (e.g., "Ada — AI Basics")
+- Right: Three-dot overflow menu → Topic Index, End Session
+
+### Topic Index: Slide-Up Bottom Sheet
+
+**Not a sidebar.** A bottom sheet rising from below — avoids Slack/messaging-app feel.
+
+- Triggered from: overflow menu in chat, or "Switch Topic" on celebration
+- Rises from bottom, covers ~75% of screen height
+- Shows all topic areas with progress and last-active timestamp
+- Tap a topic to switch (current chat preserved in background)
+- Drag down to dismiss
 
 ---
 
-## First-Session User Journey
+## 3. Screen Specifications
 
-This is the critical path. Every screen is designed to minimize friction and maximize first-lesson completion.
+### S-01: Splash / Loading
+- Aible logo centered, purple gradient background (#7C3AED → #6D28D9), subtle pulse
+- Duration: 1.5s max, auto-advance
+- Fade to onboarding (first launch) or Learn tab (returning user)
 
-### Step 1: Welcome (Screen: S-01)
-- Mascot + app name + tagline "Be AI-able."
-- Single CTA: "Get Started"
-- No signup, no login, no explanation. One tap to proceed.
-- Returning users see "Welcome back" with login link below CTA.
+### S-02: Onboarding — Welcome
+- **Top 40%:** Illustration of friendly AI tutor character in chat bubble
+- **Center:** "Learn AI by talking about it" — 24px semibold
+- **Below:** "Chat with expert AI tutors who explain things in plain English. No jargon. No coding. Just conversation." — 16px, gray-600
+- **Bottom:** "Get Started" button, full-width, purple, 48px height
 
-### Step 2: Role Selection (Screen: S-02)
-- "What do you do?"
-- 6 large tap cards: Marketer, Freelancer, Business Owner, Creator, Student, Other
-- One tap selects → auto-advances to next screen
-- No "Next" button needed — selection IS the action
+### S-03: Onboarding — Pick Your First Topic
+- **Top:** "What are you most curious about?" — 20px semibold
+- **Grid:** 2-column grid of topic cards (3 available + 3 "Coming Soon" dimmed)
+- Each card: Icon, topic name (16px semibold), one-line hook (13px, gray-500), tutor's accent color bar on left edge
+- Cards: 48% width, ~100px height, white bg, rounded-xl, subtle shadow
+- **Bottom:** "Pick one to start — you can explore others anytime" — 13px, gray-400
+- **MVP topics shown:**
+  - "AI Basics" with Ada (purple) — What AI actually is and isn't
+  - "Prompting" with Sage (teal) — Get better results from ChatGPT & friends
+  - "AI at Work" with Max (blue) — Use AI tools in your job today
+  - "AI Ethics" with Nova (rose) — Coming Soon
+  - "AI for Business" with Blake (amber) — Coming Soon
+  - "AI Creative Tools" with Muse (violet) — Coming Soon
+- **Interaction:** Tap a card to select (purple border + checkmark), tap "Start Learning" button
 
-### Step 3: Goal Selection (Screen: S-03)
-- "What's your goal?"
-- 3 large tap cards: "Save time" (productivity), "Level up my career" (career), "Earn more money" (income)
-- Same interaction: tap to select → auto-advance
+### S-04: Onboarding — Quick Preferences (optional, skippable)
+- "One quick thing..." — 18px semibold
+- "How much do you know about AI?" — single-select: "Brand new" / "I've played with ChatGPT" / "I use AI tools regularly"
+- "Skip" link in top right
+- "Continue" button at bottom
 
-### Step 4: Experience Level (Screen: S-04)
-- "How much have you used AI?"
-- 3 options: "Never tried it" (beginner), "A few times" (intermediate), "I use it regularly" (advanced)
-- Tap to select → auto-advance to first lesson
+### S-05: Learn Tab — Topic Dashboard (Home)
 
-### Step 5: First Lesson (Screen: S-10 series)
-- Lesson starts immediately. No transition screen, no "loading your personalized path."
-- First lesson is from Module 1, Lesson 1 ("What is a prompt?"), beginner difficulty
-- Exercises are easy — engineered for 100% success
-- 6 exercises (shorter than normal), ~2-3 minutes
-
-### Step 6: First Celebration (Screen: S-13)
-- Confetti animation, XP earned (+110 XP), mascot celebrating
-- "You just learned your first AI skill!"
-- Below: "You're ahead of most people. Keep going."
-
-### Step 7: Signup Prompt (Screen: S-05)
-- "Create a free account to save your progress"
-- Email + password fields
-- "Continue with Google" button
-- "Skip for now" link (small, bottom — progress saved to localStorage temporarily)
-- Progress from first lesson is preserved after signup
-
-### Step 8: Daily Goal Selection (Screen: S-06)
-- "How much do you want to learn each day?"
-- 3 options with descriptions:
-  - Quick (1 lesson/day) — "Perfect for busy days"
-  - Steady (2 lessons/day) — "Build a solid habit" ← highlighted as recommended
-  - Ambitious (3 lessons/day) — "Fast-track your skills"
-- CTA: "Set my goal"
-
-### Step 9: Home Screen (Screen: S-07)
-- Learning path revealed with first lesson already completed (satisfying)
-- Streak: "1" with fire icon
-- Daily goal ring showing 1/2 (if Steady selected)
-- Current lesson node pulsing, ready to tap
-
-**Total journey: ~3 minutes from app open to home screen with first lesson done.**
-
----
-
-## Screen Specifications
-
-### S-01: Welcome Screen
-**Purpose:** First impression + entry point
-**Elements:**
-- Mascot illustration (centered, upper third)
-- "Aible" logo text
-- "Be AI-able." tagline
-- "Get Started" primary CTA button (full width, bottom)
-- "I already have an account" text link (below CTA, muted)
-**States:**
-- Default (new user)
-- Returning (show "Welcome back, [name]" + "Continue" CTA + "Switch account" link)
-**Maps to:** F1 (Onboarding)
-
-### S-02: Role Selection
-**Purpose:** Personalize content framing
-**Elements:**
-- "What do you do?" header
-- 6 option cards in 2-column grid (icon + label each)
-- Progress dots (1 of 3 filled)
-**Interaction:** Tap card → brief highlight animation → auto-advance (300ms delay)
-**Maps to:** F1, F6 (Onboarding, Adaptive Curriculum)
-
-### S-03: Goal Selection
-**Purpose:** Set motivation context
-**Elements:**
-- "What's your goal?" header
-- 3 option cards (full width, stacked): icon + title + subtitle
-- Progress dots (2 of 3 filled)
-**Interaction:** Same as S-02 — tap → highlight → auto-advance
-**Maps to:** F1
-
-### S-04: Experience Level
-**Purpose:** Set starting difficulty tier + path position
-**Elements:**
-- "How much have you used AI?" header
-- 3 option cards (full width, stacked): emoji + title + description
-  - "Never tried it" → starts at Module 1, Lesson 1, beginner tier
-  - "A few times" → starts at Module 1, Lesson 3, intermediate tier
-  - "I use it regularly" → starts at Module 2, Lesson 1, advanced tier
-- Progress dots (3 of 3 filled)
-**Interaction:** Tap → transition directly into first lesson
-**Maps to:** F1, F6
-
-### S-05: Signup Screen
-**Purpose:** Account creation (shown after first lesson)
-**Elements:**
-- "Create a free account to save your progress" header
-- Email input field
-- Password input field
-- "Create Account" primary CTA
-- Divider: "or"
-- "Continue with Google" button (Google logo)
-- "Skip for now" text link (bottom, muted)
-**States:**
-- Default (signup mode)
-- Login mode (toggle via "I already have an account" link — swaps to email + password + "Log in" CTA + "Forgot password?" link)
-- Error: invalid email, password too short, account exists
-- Loading: button shows spinner during auth
-**Maps to:** F2
-
-### S-06: Daily Goal Selection
-**Purpose:** Set daily lesson target
-**Elements:**
-- "How much do you want to learn each day?" header
-- 3 option cards (full width):
-  - Quick: "1 lesson/day — Perfect for busy days"
-  - Steady: "2 lessons/day — Build a solid habit" (highlighted border, "Recommended" tag)
-  - Ambitious: "3 lessons/day — Fast-track your skills"
-- "Set my goal" primary CTA (bottom)
-**Maps to:** F5
-
-### S-07: Home Screen (Learn Tab)
-**Purpose:** Primary screen. Shows learning path, daily status, and next lesson.
 **Layout (top to bottom):**
-- **Status bar area:** Streak (fire icon + number, left), XP total (star icon + number, center), Daily goal ring (right)
-- **Module header:** Current module name + progress (e.g., "Prompt Foundations — 1/6")
-- **Learning path:** Vertical winding path of lesson nodes
-  - Completed nodes: primary color fill + checkmark
-  - Current node: larger, pulsing glow, mascot sitting on it
-  - Locked nodes: gray fill + lock icon
-  - Module dividers: horizontal line + module name label
-- **Tap current node → starts lesson**
 
-**States:**
-- Default: path with progress
-- Daily goal met: celebratory banner at top ("Goal reached!")
-- All lessons for today done (free tier): "Come back tomorrow for more" message or upgrade CTA
-- Empty (first visit pre-lesson): path with all nodes locked except first
-**Maps to:** F3, F5, F9
+- **Header (sticky, 64px):**
+  - Left: "Aible" wordmark, 20px semibold, purple
+  - Right: XP counter (star + number) and streak flame (flame + day count)
 
-### S-08: Practice Tab
-**Purpose:** Review exercises from completed lessons
-**Elements:**
-- "Practice" header
-- List of completed modules/lessons available for review
-- Each item shows: lesson title, concept, "Practice" button
-- Mascot with encouraging message if no completed lessons yet
-**States:**
-- Default: list of available practice sets
-- Empty: "Complete your first lesson to unlock practice!" + mascot
-**Maps to:** F4 (extends lesson player to review mode)
+- **Continue Card (hero, 120px):**
+  - Full-width, purple gradient background
+  - Left: Tutor avatar (32px circle, tutor's accent color)
+  - Content: "Continue: [Topic Name]" — 16px semibold white. "Last session: [time ago]" — 13px white/70%
+  - Right: Arrow icon
+  - Tap → S-06, resuming last conversation
+  - Only shows if user has a previous session
 
-### S-09: Badges Tab
-**Purpose:** Achievement display and motivation
-**Elements:**
-- "Achievements" header
-- Grid of badge slots (3 columns)
-- Earned badges: full color + name below
-- Unearned badges: gray silhouette + "???" or hint text
-- Tap earned badge → detail modal (badge name, date earned, description)
-**States:**
-- Default: mix of earned and unearned
-- Empty (new user): all gray with "Complete lessons to earn badges"
-**Maps to:** F5
+- **Daily Goal Mini-Bar (48px):**
+  - Horizontal progress bar (teal fill on gray track)
+  - "1 of 2 sessions today" — 14px
+  - Tap → Today tab
 
-### S-10: Lesson Player — Exercise Screen
-**Purpose:** Core learning interaction (one exercise at a time)
-**Layout:**
-- **Top bar:** Close (X) button left, progress bar center (fills left to right)
-- **Content area:** Exercise content (varies by type — see below)
-- **Bottom area:** "Check" button (full width, pinned to bottom). Disabled until answer selected.
+- **Topic Grid:**
+  - Section header: "Your Topics" — 16px semibold
+  - 2-column grid of topic cards
+  - Each card (48% width, ~140px height):
+    - Top: Topic icon/emoji (24px)
+    - Name: 15px semibold
+    - Tutor: "with Ada" — 12px, tutor's accent color
+    - Progress ring: small circular (0-100%), teal fill
+    - Subtitle: "4 of 12 concepts" — 12px, gray-500
+    - Last active: "2h ago" or "New" badge (amber) — 11px
+    - "Coming Soon" topics: dimmed, no progress ring, gray lock icon
+  - Tap card → S-06 Chat Session
 
-#### Exercise Type: Prompt Builder
-- Instruction text: "Arrange these into an effective prompt"
-- Scattered prompt component chips (draggable): Role, Context, Task, Format
-- Drop zone: outlined area where chips snap into order
-- Chips are large (56px height), easy to drag with thumb
+- **Empty state (first visit):** No Continue Card. Topic grid shows all with "Start" labels. Prompt: "Pick a topic and start chatting. Your AI tutor is ready."
 
-#### Exercise Type: Output Judge
-- Instruction text: "Which output is better?"
-- Two cards (stacked vertically, ~40% height each): Output A and Output B
-- Each card shows a simulated AI response
-- Tap a card to select → border highlights → "Check" enables
-- After check: winning card gets green border, explanation appears below
+### S-06: Chat Session (CORE SCREEN)
 
-#### Exercise Type: Fill-in-the-Blank
-- Instruction text: "Complete this prompt"
-- Prompt template with highlighted blank(s)
-- Word bank below: 4-6 option chips (tap to select, tap again to deselect)
-- Selected chip fills into the blank
+The primary learning interaction. **Not a generic chat interface.**
 
-#### Exercise Type: Real-World Scenario
-- Scenario description (2-3 sentences, realistic work situation)
-- "What's the best approach?" header
-- 3-4 option cards (text only, tap to select)
-- Single-select — tap one → border highlights → "Check" enables
+#### Top Bar (56px, sticky)
+- Left: Back arrow
+- Center: Tutor name + topic (e.g., "Ada — AI Basics" / 16px + 12px)
+- Right: Three-dot overflow → Topic Index, End Session
+- Background: white, border-bottom: 1px #E5E7EB
 
-**Maps to:** F4
+#### Session Progress Indicator (4px, below top bar)
+- Thin horizontal bar, full width, teal fill
+- Advances when user demonstrates understanding of a concept
+- Discrete jumps, not continuous
 
-### S-11: Lesson Player — Feedback Overlay
-**Purpose:** Immediate response after checking an answer
-**Behavior:** Slides up from bottom, covers lower 30% of screen
+#### Chat Area (fills space above input)
+- Background: #F9FAFB (warm light gray — differentiates from messaging apps)
+- Scroll: vertical, newest at bottom, auto-scrolls on new messages
 
-**Correct answer:**
-- Green background
-- "Great job!" / "Exactly!" / "You got it!" (rotating encouragement)
-- Brief explanation (1 sentence) of why it's correct
-- "Continue" button (green)
-- Micro-celebration: screen flash green (0.3s), success sound
+**Message Types:**
 
-**Incorrect answer:**
-- Soft amber/orange background (NOT harsh red)
-- "Not quite — here's why" header
-- Correct answer shown
-- Explanation (1-2 sentences)
-- "Got it" button (neutral)
-- Gentle shake animation on the wrong answer, soft error sound
-- Tone: curious and helpful, never judgmental
+1. **AI Tutor Message (left-aligned):**
+   - Avatar: 28px circle in tutor's accent color
+   - Bubble: white bg, rounded-2xl, max-width 82%, 14px padding
+   - Left border: 3px in tutor's accent color
+   - Text: 15px regular, gray-900, line-height 1.5
+   - Typing indicator: three animated dots while AI responds
 
-**Maps to:** F4
+2. **User Message (right-aligned):**
+   - Purple (#7C3AED) background, white text, rounded-2xl, max-width 75%
 
-### S-12: Lesson Player — Concept Intro Card
-**Purpose:** Introduce the lesson concept before exercises begin
-**Elements:**
-- Concept title: "Adding Context to Prompts"
-- Mascot illustration (small)
-- 2-3 sentence explanation with a before/after example
-- "Let's practice!" CTA button
-**Behavior:** First screen in every lesson. Tap to proceed to exercises.
-**Maps to:** F4
+3. **Concept Card (full-width, inline):**
+   - White bg, rounded-xl, 1px #E5E7EB border, 16px padding
+   - "Key Concept" label in small caps, teal, 11px
+   - Title: concept name, 16px semibold
+   - Body: 2-3 sentence explanation, 14px, gray-600
+   - Bottom: subtle teal accent line
+   - Visually distinct — signals "this is important"
 
-### S-13: Lesson Complete Screen
-**Purpose:** Celebrate lesson completion and show earnings
-**Elements:**
-- Confetti animation (2-3 seconds)
-- Mascot celebrating
-- "Lesson Complete!" header
-- XP earned breakdown: exercises (e.g., +80 XP) + completion bonus (+50 XP) + perfect bonus (+20 XP if applicable)
-- Total XP with counting animation
-- Concept summary: "You learned: [concept name]"
-- Accuracy: "8/8 correct" (green) or "6/8 correct" (neutral)
-- "Continue" button → returns to home (or next lesson if daily goal not met)
-**States:**
-- Normal completion
-- Perfect lesson (extra celebration, "Perfect!" badge flash)
-- Daily goal met (additional "Daily goal reached!" banner)
-- Streak milestone (additional streak badge animation after main celebration)
-**Maps to:** F4, F5
+4. **Quick Check (full-width, interactive):**
+   - Rounded-xl, 1px purple-200 border, 16px padding
+   - "Quick Check" label, purple, 11px small caps
+   - Question: 15px semibold
+   - 2-3 answer pills: full-width, 44px height, rounded-lg, 1px gray-200 border
+   - On correct: pill turns teal + checkmark + "+10 XP" float animation
+   - On incorrect: pill turns amber, correct answer highlighted in teal, brief explanation
 
-### S-14: Paywall Screen
-**Purpose:** Convert free users to Pro
-**Trigger:** After 3rd lesson completion in a day (free tier)
-**Elements:**
-- "You've completed your free lessons today" header
-- Mascot with encouraging expression
-- Feature comparison:
-  - Free: 3 lessons/day, 1 streak freeze/week
-  - Pro: Unlimited lessons, unlimited freezes, all badges, advanced content
-- Plan cards:
-  - Monthly: $9.99/month
-  - Annual: $59.99/year ($4.99/mo) — highlighted "Best Value" + "Save 50%" tag
-- "Start 7-day free trial" CTA (for annual plan)
-- "Maybe later" text link (bottom, muted) → returns to home
-**States:**
-- Default (first time seeing paywall)
-- Returning (user has seen before — show "Pick up where you left off" copy)
-**Maps to:** F7
+5. **XP Moment (centered, ephemeral):**
+   - "+10 XP" in purple with sparkle micro-animation
+   - Fades after 1.5s
 
-### S-15: Profile Screen
-**Purpose:** User stats, settings, subscription management
-**Layout (scrollable):**
-- **Header:** Avatar (initials circle), name, level badge
-- **Stats row:** Total XP | Current streak | Lessons completed | Current level
-- **Streak calendar:** 7-day row showing completed/missed days this week
-- **Settings section:**
-  - Daily goal (tap to change)
-  - Streak freeze status ("1 freeze available" or "Freeze active")
-  - Account (email display)
-  - Subscription (Free/Pro status, manage link → Stripe portal)
-  - Log out
-**States:**
-- Free user: shows "Upgrade to Pro" card in settings
-- Pro user: shows "Pro Member" badge + manage subscription link
-**Maps to:** F2, F5, F7
+6. **Suggested Actions (above input, horizontally scrollable):**
+   - Pill-shaped buttons: rounded-full, 1px gray-200 border, 14px text
+   - Examples: "Tell me more", "Give me an example", "How does this apply to my work?", "I don't get it", "What's next?"
+   - Appear after every AI message
+   - Tap sends as user message and removes the row
+   - **Critical differentiator** from generic chatbots — guides users who don't know what to ask
 
-### S-16: Streak Milestone Modal
-**Purpose:** Celebrate streak achievements
-**Trigger:** Reaching 3, 7, 14, 30, 50, or 100 day streak
-**Elements:**
-- Overlay modal with semi-transparent backdrop
-- Large streak number with fire animation
-- Milestone badge (unique per milestone)
-- "X-day streak!" header
-- Mascot celebrating
-- "Keep it going!" CTA → dismiss
-**Maps to:** F5
+#### Input Area (sticky bottom, ~60px)
+- White bg, border-top: 1px #E5E7EB
+- Text input: rounded-full, gray-100 bg, 44px height
+- Placeholder: "Ask anything..."
+- Send button: purple circle, 36px, white arrow — only when text entered
+- Safe area padding for iOS home indicator
 
-### S-17: Streak Freeze Notification
-**Purpose:** Inform user their streak was saved
-**Trigger:** User returns after missing a day with a freeze available
-**Elements:**
-- Banner at top of home screen (dismissible)
-- "Your streak freeze saved your X-day streak yesterday!"
-- Ice/shield icon
-**Maps to:** F5
+#### Session Opener (start of each session)
+- Centered, no bubble styling
+- Tutor avatar: 48px circle
+- Greeting: "Hey! I'm Ada, your AI Basics tutor." — 16px semibold
+- Context: "Let's pick up where we left off..." OR "Ready to explore what AI actually is?"
+- "Today's goal" mini-card: 2-3 learning objectives
+- Then first tutor message begins
+
+#### Session Flow
+1. Session Opener
+2. Tutor's first message (contextual, resumes or introduces)
+3. User responds via suggestions or typing
+4. Tutor teaches with Concept Cards, asks questions
+5. Quick Checks every 2-3 minutes
+6. XP Moments on milestones
+7. After ~5-8 minutes (or objectives met), tutor wraps up → S-07
+
+### S-07: Session Wrap-Up / Celebration
+
+**Phase 1 — In-Chat:**
+- Tutor sends wrap-up message
+- **Session Summary Card** appears: purple gradient left border, white bg
+  - "Session Summary" — 14px semibold, purple
+  - Bulleted concepts covered (teal checkmarks)
+  - "Quick Checks: 2/2 correct"
+- "Continue" or "Take a break" options
+
+**Phase 2 — Celebration Overlay:**
+- Slides up full-screen, purple gradient background
+- Large XP animation: "+45 XP" with particle burst
+- Streak update: "3-day streak!"
+- Progress: "AI Basics: 33% complete" with progress ring animation
+- Badge earned (if any): badge icon + "New Badge!" callout
+- Daily goal met (if applicable): confetti
+- Two buttons:
+  - "Keep Going" (teal, full-width) → Learn tab
+  - "Switch Topic" (outline, full-width) → Topic Index panel
+
+### S-08: Today Tab — Daily Dashboard
+- **Header:** "Today" — 24px semibold
+- **Streak Card (80px):** Large flame + streak number, warm gradient bg
+- **Daily Goal Progress (100px):** Large circular ring (80px), teal fill, "1/2 sessions"
+- **Activity Feed:** Chronological list of today's events
+  - "Completed session in AI Basics — +30 XP"
+  - "Earned Quiz Ace badge"
+  - If empty: "Start your first session today!"
+
+### S-09: Profile Tab
+- **Header:** Avatar (64px initials circle), name, level badge ("Level 4 — Skilled")
+- **Stats Row:** Streak | Topics started | Sessions completed
+- **Badges Section:** Horizontal scroll of earned badges (40px circles). Unearned: gray + lock. Tap → S-11 badge detail
+- **Settings:** Notifications toggle, Daily Goal, Display Name, About, Reset Progress (red, requires confirmation)
+
+### S-10: Topic Index Panel (Bottom Sheet)
+- Bottom sheet, rounded-t-2xl, grabber handle, 75% viewport
+- "Topics" header + X close button
+- Vertical list of topics (72px each):
+  - Left: topic icon in 40px colored circle
+  - Center: topic name (16px semibold), status ("4 of 12 concepts — Last: 2h ago")
+  - Right: progress mini-ring (28px) or "Start" label
+  - Active topic: purple left border + "Currently in" tag
+  - Coming Soon topics: dimmed with lock
+- Tap → dismisses sheet, transitions to that topic's chat
+
+### S-11: Badge Detail (Bottom Sheet)
+- Small sheet (~40% viewport)
+- Badge icon: 64px, centered
+- Name, description, "Earned on [date]" or "How to earn: [criteria]"
+- Close: tap outside or drag down
+
+### S-12: Daily Goal Picker
+- "Set Your Daily Goal" — 20px semibold
+- 3 cards: "Casual — 1 session/day", "Regular — 2 sessions/day" (default, highlighted), "Ambitious — 3 sessions/day"
+- "Save" button
 
 ---
 
-## Core Interaction Loop
+## 4. First-Session Journey
 
-The daily engagement loop that drives retention:
+**Goal: Open app → chatting with AI tutor in under 60 seconds.**
 
-```
-Open app (triggered by habit / streak anxiety)
-    → See home screen (streak, daily goal progress, current lesson node)
-    → Tap current lesson node
-    → Complete lesson (3-5 min, one exercise per screen)
-    → Celebration screen (XP, progress)
-    → Return to home (path advances, goal ring updates)
-    → If daily goal not met → "One more?" prompt → next lesson
-    → If daily goal met → celebration banner → close app satisfied
-    → If free tier limit hit → paywall → upgrade or return tomorrow
-```
+| Step | Screen | Time | Action |
+|------|--------|------|--------|
+| 1 | S-01 Splash | 0-2s | Auto-advance |
+| 2 | S-02 Welcome | 2-8s | Tap "Get Started" |
+| 3 | S-03 Pick Topic | 8-20s | Select topic, tap "Start Learning" |
+| 4 | S-06 Chat | 20s+ | Conversation begins |
 
-**Session target:** 4-7 minutes total (including transitions and celebrations)
+First tutor message is extra warm, introduces itself, asks a simple question. Suggested actions are scaffolded: "I use AI tools at work", "I've heard about it but don't really get it", "I want to use AI for my business."
 
 ---
 
-## Visual Tone Direction
+## 5. Core Retention Loop
 
-### Personality
-- **Energetic but not childish** — Duolingo's fun factor with Brilliant's sophistication
-- **Encouraging, never judgmental** — wrong answers are learning moments
-- **Slightly playful** — the mascot adds warmth without being cartoonish
-- **Clean and spacious** — generous whitespace, nothing feels cluttered
+```
+Open app
+  → See streak / daily goal status (motivation)
+  → Tap "Continue" on hero card (low friction)
+  → Chat with tutor (value delivery)
+  → Earn XP + see progress advance (reward)
+  → Session wraps up with celebration (closure)
+  → See daily goal progress update
+  → Close app or switch topic
+```
 
-### Color System
-| Role | Color | Usage |
-|------|-------|-------|
-| Primary | Vibrant purple (#7C3AED) | Buttons, active states, path nodes, brand accent |
-| Secondary | Warm teal (#14B8A6) | Secondary actions, progress indicators |
-| Success | Green (#22C55E) | Correct answers, completed states |
-| Error | Soft amber (#F59E0B) | Incorrect answers (NOT red — less punitive) |
-| XP / Achievement | Gold (#F59E0B) | XP displays, achievement badges, celebrations |
-| Streak | Orange-red (#EF4444) | Streak fire icon, streak-related UI |
-| Background | White (#FFFFFF) | Primary background |
-| Surface | Light gray (#F8FAFC) | Cards, input areas |
-| Text primary | Near-black (#0F172A) | Headers, body text |
-| Text secondary | Gray (#64748B) | Captions, hints, secondary info |
+---
 
-### Typography
-- Headers: Bold, 24-32px
-- Body: Regular, 16-18px
-- Captions: Regular, 14px
-- All text: High contrast, readable at arm's length
+## 6. Gamification Integration
 
-### Mascot
-- Appears in: welcome screen, lesson intros, feedback, celebrations, empty states, streak notifications
-- Has emotional states: encouraging (default), celebrating (correct/completion), curious (lesson intro), gentle nudge (incorrect), excited (milestone)
-- Style: Simple, geometric, modern — not a cartoon animal. Consider a friendly abstract character (spark, orb, or minimal robot) that represents AI helpfulness.
-- Should work at small sizes (32px in-line) and large sizes (120px hero illustrations)
-
-### Motion
-| Context | Animation | Duration |
+| Element | Earned By | Shown On |
 |---------|-----------|----------|
-| Screen transitions | Slide left (forward), slide right (back) | 250ms |
-| Button press | Scale down to 0.97, back to 1 | 100ms |
-| Correct answer | Green flash overlay | 300ms |
-| Incorrect answer | Gentle horizontal shake | 300ms |
-| Lesson complete | Confetti burst + XP count-up | 2000ms |
-| Streak milestone | Fire/glow pulse + badge reveal | 3000ms |
-| Progress bar fill | Smooth ease-out | 400ms |
-| Tab switch | Crossfade | 200ms |
-| Node pulse (current lesson) | Scale 1→1.1→1, repeating | 2000ms loop |
+| **XP** | Quick Check (+10), session completion (+25), new concept (+5), daily bonus (+5) | Learn header, Today tab, Profile, Celebration |
+| **Streak** | 1+ sessions per day | Learn header flame, Today tab, Celebration |
+| **Level** | XP thresholds | Profile, level-up in Celebration |
+| **Badges** | Specific achievements | Profile, earned during Celebration |
+| **Progress %** | Concepts explored per topic | Topic cards, Topic Index |
+| **Daily Goal** | Session count (1, 2, or 3/day) | Learn mini-bar, Today tab |
+
+### In-Chat Moments
+- **XP Float:** "+10 XP" drifts upward, 1.2s ease-out
+- **Concept Unlocked:** Teal ring pulse around Concept Card
+- **Mid-Session Milestone:** At 5 concepts, brief confetti + "You're on fire!" styled message
 
 ---
 
-## Empty, Error, and Loading States
+## 7. Tutor Personalities
 
-### Empty States
-| Screen | Empty State |
-|--------|------------|
-| Practice tab | Mascot + "Complete your first lesson to unlock practice!" |
-| Badges tab | Gray badge grid + "Complete lessons to earn badges" |
-| Streak (day 0) | Fire icon grayed out + "Complete a lesson to start your streak" |
+| Topic | Tutor | Personality | Color |
+|-------|-------|-------------|-------|
+| AI Basics | Ada | Patient, warm, analogies | #7C3AED (purple) |
+| Prompting | Sage | Clever, playful, examples | #14B8A6 (teal) |
+| AI at Work | Max | Practical, direct, actionable | #3B82F6 (blue) |
+| AI Ethics | Nova | Thoughtful, balanced, Socratic | #F43F5E (rose) |
+| AI for Business | Blake | Strategic, sharp, outcomes | #F59E0B (amber) |
+| AI Creative Tools | Muse | Enthusiastic, expressive | #8B5CF6 (violet) |
 
-### Error States
-| Scenario | Handling |
-|----------|---------|
-| Network error during lesson | "Oops, connection lost. Your progress is saved." + "Try again" button |
-| Auth failure | Inline error below field: "That email is already registered" / "Incorrect password" |
-| Payment failure | "Payment didn't go through. Try again or use a different card." |
-| Lesson data fails to load | "Couldn't load this lesson. Tap to retry." + mascot with confused expression |
+Avatar, accent color, and greeting style change per tutor. Switching topics feels like meeting a different expert.
 
-### Loading States
-| Context | Treatment |
-|---------|-----------|
-| App launch | Splash screen with logo + mascot (max 2s) |
-| Lesson loading | Skeleton of exercise screen (gray placeholder blocks) |
-| Auth processing | Button shows inline spinner, disabled state |
-| Payment processing | Full-screen spinner + "Processing your upgrade..." |
+---
+
+## 8. Visual Tone
+
+- **Premium minimalism** — generous whitespace, clean type, no clutter
+- **Warm and approachable** — rounded corners (12-16px), soft shadows, warm grays
+- **Playful without childish** — animations brief and purposeful
+- **Chat area distinct from messaging** — #F9FAFB background, Concept Cards, Suggested Actions make it clearly educational
+
+### Color Application
+- **Purple (#7C3AED):** Primary actions, user bubbles, XP, active states
+- **Teal (#14B8A6):** Progress, Concept Cards, success, "Continue" actions
+- **Green (#22C55E):** Correct Quick Check answers
+- **Amber (#F59E0B):** Gentle errors, streaks
+- **Gray-900 (#111827):** Primary text
+- **Gray-500 (#6B7280):** Secondary text
+- **White:** Cards, bubbles, surfaces
+
+### Animation
+| Context | Duration |
+|---------|----------|
+| Screen transitions | 200-300ms ease-out |
+| XP float | 1.2s ease-out upward + fade |
+| Confetti | 2s burst with gravity |
+| Progress ring fill | 400ms ease-in-out |
+| Chat messages | 150ms slide-up |
+| Bottom sheet | 300ms spring |
+
+---
+
+## 9. Error States
+
+| Scenario | Behavior |
+|----------|----------|
+| No internet | Amber banner below top bar: "You're offline. Reconnect to continue." Input disabled. |
+| AI response slow | Typing indicator up to 10s, then "Taking a moment..." |
+| All topics complete | Congratulatory state: "You've explored everything! Review any topic." |
+| Daily goal met | Celebration on Today tab. Learn mini-bar: "Goal complete! Bonus XP for extras." |
+
+---
+
+## 10. Accessibility
+
+- All interactive elements have accessible labels
+- Color never the only state indicator (paired with icon/text)
+- Quick Check options have clear selected/unselected states
+- Minimum contrast: 4.5:1 body text, 3:1 large text
+- Reduce motion: disable XP float, confetti, spring animations

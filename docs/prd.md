@@ -1,8 +1,9 @@
 # Aible — Product Requirements Document
 
-**Date:** 2026-03-17
-**Status:** MVP definition
+**Date:** 2026-03-18
+**Status:** MVP definition (v2 — chat-based pivot)
 **Tagline:** Be AI-able.
+**One-liner:** Learn AI by talking to AI.
 
 ---
 
@@ -12,11 +13,11 @@ Non-technical professionals (25–45) — marketers, freelancers, small business
 
 ## Core Problem
 
-There's no structured, habit-forming way for non-technical people to learn AI by doing. Existing options are too technical (developer courses), too passive (video lectures with 3-15% completion), or too shallow (Twitter threads). People need a daily practice habit that builds real, applicable AI skills — the way Duolingo builds language skills.
+There's no structured, habit-forming way for non-technical people to learn AI by doing. Existing options are too technical (developer courses), too passive (video lectures with 3-15% completion), or too shallow (Twitter threads). People need a daily practice habit that builds real, applicable AI skills — delivered through conversation, not quizzes.
 
 ## Solution
 
-A gamified mobile web app that teaches AI skills through bite-sized daily lessons with interactive exercises, streaks, XP, and adaptive difficulty. Every lesson produces a real, usable output. Freemium model with Stripe payments.
+A gamified mobile web app that teaches AI skills through conversational sessions with specialized AI tutors. Each tutor has deep knowledge of a specific AI topic area and teaches through Socratic dialogue, embedded concept cards, and inline knowledge checks. Users earn XP, maintain streaks, and track visible progress across topics. Freemium model: 2 free sessions/day.
 
 ---
 
@@ -24,57 +25,79 @@ A gamified mobile web app that teaches AI skills through bite-sized daily lesson
 
 ### F1: Onboarding (Value-First)
 
-User completes their first lesson BEFORE creating an account.
+User starts chatting with an AI tutor within 60 seconds.
 
 | # | Acceptance Criteria |
 |---|---|
-| 1.1 | App opens to a 3-step personalization flow: role selection (marketer, freelancer, business owner, creator, student, other), goal (productivity, career, income), AI experience level (never, sometimes, regularly) |
-| 1.2 | Personalization completes in under 30 seconds (3 taps) |
-| 1.3 | First lesson starts immediately after personalization — no signup required |
-| 1.4 | First lesson is engineered for 100% success (easiest exercises, generous feedback) |
-| 1.5 | After first lesson celebration, user is prompted: "Create a free account to save your progress" |
-| 1.6 | Total time from app open to first lesson completion: under 3 minutes |
+| 1.1 | App opens to a welcome screen with "Learn AI by talking about it" messaging |
+| 1.2 | User picks a starting topic from a 2-column grid (3 available, 3 "Coming Soon") |
+| 1.3 | Optional quick preference screen: AI experience level (skippable) |
+| 1.4 | First chat session starts immediately — no signup required |
+| 1.5 | First session is warm and encouraging, tutor introduces itself |
+| 1.6 | Total time from app open to first AI tutor message: under 60 seconds |
 
-### F2: Authentication
+### F2: Chat Session (Core Learning Experience)
 
-User accounts persist progress across sessions and devices.
-
-| # | Acceptance Criteria |
-|---|---|
-| 2.1 | Email + password signup/login via Supabase Auth |
-| 2.2 | Google social login via Supabase Auth |
-| 2.3 | Pre-signup progress (from F1) is preserved after account creation |
-| 2.4 | User can log out and log back in with progress intact |
-
-### F3: Learning Path (Linear)
-
-A single, curated path of lessons that the user progresses through sequentially.
+Conversational learning with structured milestones.
 
 | # | Acceptance Criteria |
 |---|---|
-| 3.1 | Home screen shows a visual linear path (vertical, winding nodes) |
-| 3.2 | Each node = one lesson. States: completed (checkmark), current (highlighted/pulsing), locked (gray) |
-| 3.3 | Lessons organized into modules (sections) with visible headers: "Prompt Foundations," "AI for Writing," "AI for Productivity," "AI for Monetization" |
-| 3.4 | Each module contains 5-8 lessons |
-| 3.5 | Lessons unlock sequentially — completing one unlocks the next |
-| 3.6 | Onboarding assessment adjusts starting position (experienced users can skip ahead) |
-| 3.7 | Path shows per-module progress (e.g., "3/6 lessons complete") |
+| 2.1 | Full-screen chat interface — bottom tabs hidden during sessions |
+| 2.2 | Top bar: back arrow, tutor name + topic label, overflow menu |
+| 2.3 | Session progress indicator (thin bar below top bar) advances on concept coverage |
+| 2.4 | AI tutor messages: left-aligned white bubbles with tutor avatar and accent-color left border |
+| 2.5 | User messages: right-aligned purple bubbles |
+| 2.6 | **Concept Cards:** Full-width inline cards with "Key Concept" label, title, explanation — visually distinct from chat bubbles |
+| 2.7 | **Quick Checks:** Inline interactive cards with question + 2-3 tappable answer pills. Correct → teal + checkmark + XP animation. Incorrect → amber + explanation |
+| 2.8 | **Suggested Actions:** Horizontally scrollable pill row above input after every AI message (e.g., "Tell me more", "Give me an example", "What's next?") |
+| 2.9 | **XP Moments:** "+10 XP" float animation on correct Quick Check answers and concept milestones |
+| 2.10 | Session Opener: tutor avatar, greeting, "Today's goal" mini-card with 2-3 learning objectives |
+| 2.11 | Sessions last 5-8 minutes (~8-15 messages), tutor controls pacing |
+| 2.12 | Tutor uses Socratic method — guides through questions, never lectures |
+| 2.13 | Quick Checks embedded every 2-3 minutes of conversation |
+| 2.14 | Streaming responses with typing indicator for real-time feel |
 
-### F4: Lesson Player
+### F3: Topic Selection & Navigation
 
-The core learning experience — interactive, 3-5 minute micro-lessons.
+Multiple specialized AI tutors organized by topic area.
 
 | # | Acceptance Criteria |
 |---|---|
-| 4.1 | Each lesson teaches ONE concept (e.g., "Adding context to prompts") |
-| 4.2 | Lessons contain 6-10 exercises, taking 3-5 minutes total |
-| 4.3 | Full-screen takeover during lessons — no bottom nav, only close (X) and progress bar |
-| 4.4 | One exercise per screen — no scrolling or multiple questions visible |
-| 4.5 | Four exercise types implemented: **Prompt Builder** (drag to arrange prompt components), **Output Judge** (compare two AI outputs, pick the better one), **Fill-in-the-Blank** (complete a prompt template from word bank), **Real-World Scenario** (multiple choice — pick the best AI approach for a work situation) |
-| 4.6 | Exercises scaffold within each lesson: recognition → guided practice → application |
-| 4.7 | Immediate feedback on every answer: correct (green flash + sound + encouraging text) or incorrect (gentle red + correct answer shown + explanation) |
-| 4.8 | Wrong answers are NOT punitive — tone is encouraging, never judgmental |
-| 4.9 | Lesson ends with a celebration screen: confetti animation, XP earned, concept summary |
+| 3.1 | Learn tab shows topic dashboard: Continue Card (hero) + 2-column topic grid |
+| 3.2 | Each topic card shows: icon, name, tutor name ("with Ada"), progress ring, last active |
+| 3.3 | Continue Card shows last-active topic with "Continue" action — one tap to resume |
+| 3.4 | Topic Index as slide-up bottom sheet (75% viewport) for quick switching during chat |
+| 3.5 | Chat state preserved when switching topics — tutor resumes where user left off |
+| 3.6 | "Coming Soon" topics visible but dimmed with lock icon |
+
+**MVP Topics (3 active):**
+
+| Topic | Tutor | Personality | Color |
+|-------|-------|-------------|-------|
+| AI Basics | Ada | Patient, warm, analogies | #7C3AED |
+| Prompting | Sage | Clever, playful, examples | #14B8A6 |
+| AI at Work | Max | Practical, direct, actionable | #3B82F6 |
+
+**Coming Soon (3):**
+
+| Topic | Tutor | Color |
+|-------|-------|-------|
+| AI Ethics | Nova | #F43F5E |
+| AI for Business | Blake | #F59E0B |
+| AI Creative Tools | Muse | #8B5CF6 |
+
+### F4: Session Wrap-Up & Celebration
+
+Closure, reward, and forward momentum after each session.
+
+| # | Acceptance Criteria |
+|---|---|
+| 4.1 | Tutor initiates wrap-up when session objectives are met (~5-8 min) |
+| 4.2 | Session Summary Card in chat: concepts covered (teal checkmarks), Quick Check results |
+| 4.3 | Celebration overlay: full-screen, purple gradient, XP animation with particle burst |
+| 4.4 | Shows: total XP earned, streak update, topic progress ring, badge if earned, daily goal status |
+| 4.5 | Two buttons: "Keep Going" (→ Learn tab) and "Switch Topic" (→ Topic Index) |
+| 4.6 | If user ends session early (overflow menu), celebration scales to actual progress |
 
 ### F5: Gamification System
 
@@ -82,136 +105,120 @@ XP, streaks, daily goals, and celebrations that make learning addictive.
 
 | # | Acceptance Criteria |
 |---|---|
-| 5.1 | **XP:** 10 XP per exercise completed, +50 XP bonus for lesson completion, +20 XP for perfect lesson (no mistakes) |
-| 5.2 | **Streaks:** Consecutive days of completing at least 1 lesson. Displayed prominently on home screen with fire icon. |
-| 5.3 | **Streak freeze:** 1 free freeze per week (auto-granted). Additional freezes available to Pro users. Protects streak for 1 missed day. |
-| 5.4 | **Streak milestones:** Celebrations at 3, 7, 14, 30, 50, 100 days with unique badge |
-| 5.5 | **Daily goal:** Set during onboarding (Quick: 1 lesson, Steady: 2 lessons, Ambitious: 3 lessons). Adjustable in settings. |
-| 5.6 | **Daily goal ring:** Visible on home screen showing progress toward today's goal |
-| 5.7 | **Levels:** XP thresholds define user level (Level 1 at 0 XP, Level 2 at 200 XP, etc.). Level displayed on profile. |
-| 5.8 | **Celebrations are tiered:** micro (correct answer, 0.5s), medium (lesson complete, 2-3s), large (streak milestone, 3-5s) |
-| 5.9 | **Achievements/badges:** 5 MVP badges — "First Prompt" (first lesson), "On Fire" (7-day streak), "Prompt Crafter" (complete first module), "Perfect Score" (ace a lesson), "AI Explorer" (complete 10 lessons) |
+| 5.1 | **XP:** +25 per session, +10 per correct Quick Check, +5 per new concept, +5 daily first-session bonus, +10 for starting a new topic, +50 chapter bonus, +100 topic mastery bonus |
+| 5.2 | **Streaks:** Consecutive days completing at least 1 session. Fire icon on Learn tab header. |
+| 5.3 | **Daily goal:** 1, 2, or 3 sessions/day (default: 1). Progress shown as mini-bar on Learn tab. |
+| 5.4 | **Levels:** 10 levels from Beginner (0 XP) to Legend (7,500 XP). Shown on Profile. |
+| 5.5 | **Badges:** 9 badges — First Steps, Curious Mind, Deep Diver, Quiz Ace, On a Roll, Week Warrior, Concept Master, Rising Star, Explorer |
+| 5.6 | **Celebrations tiered:** micro (XP float, 1.2s), medium (session complete, 2-3s), large (badge/level-up, 3-5s) |
+| 5.7 | Today tab: daily dashboard with streak card, goal progress ring, activity feed |
 
-### F6: Adaptive Curriculum
+### F6: AI Tutor Engine
 
-Content adjusts to user level — not one-size-fits-all.
+LLM integration that powers the conversational learning experience.
 
 | # | Acceptance Criteria |
 |---|---|
-| 6.1 | Onboarding assessment (F1) sets starting module and difficulty tier |
-| 6.2 | Each lesson has 3 difficulty variants (beginner, intermediate, advanced) affecting exercise complexity |
-| 6.3 | Difficulty tier adjusts based on performance: >80% correct on last 3 lessons → advance tier. <50% correct → lower tier. |
-| 6.4 | Content framing adapts to role selected at onboarding (marketer sees marketing examples, freelancer sees freelance examples) |
+| 6.1 | Single LLM API (Claude Haiku) with per-topic system prompts — each tutor is a persona |
+| 6.2 | Vercel Edge Function proxy (`/api/chat`) — API key never in client |
+| 6.3 | Streaming responses for real-time chat feel |
+| 6.4 | System prompts define: tutor personality, teaching approach, concept map, Quick Check format, Suggested Actions, topic boundaries |
+| 6.5 | AI embeds `[QUIZ]`, `[CONCEPT]`, `[SUGGESTIONS]` tags — client parses and renders as UI elements |
+| 6.6 | Context window: last 20 messages sent to API, with summary prefix for older conversation |
+| 6.7 | Tutor stays on-topic; redirects off-topic questions to appropriate tutor |
+| 6.8 | Tutor adapts to user's experience level and role from onboarding |
 
 ### F7: Payments (Freemium)
 
-Free tier builds the habit. Pro tier removes friction and unlocks depth.
+Free tier builds the habit. Pro tier removes limits.
 
 | # | Acceptance Criteria |
 |---|---|
-| 7.1 | **Free tier:** 3 lessons per day, all modules accessible, core gamification (XP, streaks, 1 freeze/week), daily goal |
-| 7.2 | **Pro tier ($9.99/mo or $59.99/yr):** Unlimited lessons, unlimited streak freezes, achievement badges, advanced lesson variants |
-| 7.3 | Paywall appears AFTER 3rd lesson of the day: "You've completed your free lessons today. Unlock unlimited with Aible Pro." |
-| 7.4 | Paywall screen shows: feature comparison, annual plan highlighted as "Best Value" ($4.99/mo equivalent), 7-day free trial for annual |
-| 7.5 | Stripe Checkout integration for payment processing |
-| 7.6 | Subscription status synced via Supabase (webhook from Stripe) |
-| 7.7 | Paywall NEVER appears during a lesson — only between lessons |
+| 7.1 | **Free tier:** 2 sessions per day, all topics accessible, full gamification |
+| 7.2 | **Pro tier ($9.99/mo or $59.99/yr):** Unlimited sessions, full session history, priority response speed |
+| 7.3 | Upgrade prompt after 2nd session of the day: tutor teases next topic → "Want to keep going?" |
+| 7.4 | Paywall screen: feature comparison, annual highlighted as "Best Value", 7-day free trial |
+| 7.5 | Simulated in prototype (no real Stripe integration yet) |
 
-### F8: Lesson Content (MVP Curriculum)
+### F8: Progress Tracking
 
-Pre-authored lessons covering 4 modules with enough depth to sustain 3-4 weeks of daily use.
+Visible learning progress across topics without discrete exercises.
 
 | # | Acceptance Criteria |
 |---|---|
-| 8.1 | **Module 1 — Prompt Foundations** (6 lessons): What is a prompt, adding context, specifying format, role prompting, iterating on outputs, prompt templates |
-| 8.2 | **Module 2 — AI for Writing** (6 lessons): Email drafting, social media posts, editing/rewriting, summarizing, content outlines, tone adjustment |
-| 8.3 | **Module 3 — AI for Productivity** (6 lessons): Meeting notes, research summaries, data analysis prompts, workflow automation basics, document creation, task prioritization |
-| 8.4 | **Module 4 — AI for Monetization** (6 lessons): Freelance AI services, AI-powered side hustles, client deliverables, pricing AI work, portfolio building, finding opportunities |
-| 8.5 | Each lesson has 6-10 exercises across the 4 exercise types |
-| 8.6 | Each lesson has 3 difficulty variants (beginner/intermediate/advanced) |
-| 8.7 | All content uses realistic, practical scenarios — zero theory-only lessons |
-| 8.8 | Content is tool-agnostic (teaches prompt thinking, not "click here in ChatGPT") |
+| 8.1 | Each topic has a concept map (5-8 key concepts) |
+| 8.2 | Concepts transition: not started → explored (AI tagged it) → mastered (Quick Check passed) |
+| 8.3 | Topic progress shown as percentage ring on topic cards |
+| 8.4 | Profile shows: total XP, current streak, topics started, sessions completed, level |
+| 8.5 | Chat history persisted per topic in localStorage |
 
 ### F9: Mobile-First UI
 
-Gamified, colorful, fun — feels like a game that teaches.
+Clean, warm, educational — not a messaging app.
 
 | # | Acceptance Criteria |
 |---|---|
-| 9.1 | Responsive design optimized for mobile (375px-428px primary target) |
-| 9.2 | Bottom navigation: 4 tabs — Learn (path), Practice (review), Achievements, Profile |
-| 9.3 | All tap targets minimum 44px, primary CTAs 56px+ |
-| 9.4 | Animations: button press states, correct/incorrect feedback flashes, lesson completion confetti, streak celebrations |
-| 9.5 | Mascot character appears in onboarding, lesson feedback, empty states, and celebrations |
-| 9.6 | Color palette: vibrant primary (purple or teal — not generic blue), warm amber/gold for achievements, green for correct, soft red for incorrect |
-| 9.7 | Generous whitespace — screens never feel cramped |
+| 9.1 | Responsive design for 375px-428px primary target |
+| 9.2 | 3-tab bottom nav: Learn, Today, Profile |
+| 9.3 | Tabs hidden during chat sessions — full-screen takeover |
+| 9.4 | Chat background: #F9FAFB (warm gray, not white) — differentiates from messaging |
+| 9.5 | Concept Cards and Quick Checks visually distinct from chat bubbles |
+| 9.6 | Per-tutor accent colors on avatars and message borders |
+| 9.7 | All tap targets minimum 44px |
+| 9.8 | Animations: XP float, confetti, progress ring fill, chat message slide-in |
 
 ---
 
-## Non-Goals (Explicitly Out of Scope)
-
-These are specific scope boundaries to prevent creep during build:
+## Non-Goals (Out of Scope)
 
 | # | Non-Goal | Why |
 |---|----------|-----|
-| N1 | **No leaderboards or leagues** | Social competition is v2. MVP validates the core learning loop. |
-| N2 | **No push notifications** | Requires native app or service worker complexity. MVP validates retention via streak mechanic alone. |
-| N3 | **No AI-generated lesson content** | Lessons are pre-authored. Real-time AI generation adds unpredictable quality and API cost. |
-| N4 | **No real AI tool integration in exercises** | Exercises use mocked/simulated AI outputs, not live API calls. Keeps lessons predictable, fast, and free of API costs. |
-| N5 | **No desktop-optimized layout** | Mobile web only. Desktop will work but is not designed for. |
-| N6 | **No content authoring tools** | Lessons are stored as JSON data files, authored by hand or with Claude. No CMS. |
-| N7 | **No team/enterprise tier** | B2B is a future revenue channel, not MVP. |
-| N8 | **No sharing/social features** | No share-to-LinkedIn, no friend system, no activity feed. |
-| N9 | **No multiple concurrent paths** | User follows one linear path. Path switching is v2. |
-| N10 | **No lesson search or browse** | User follows the path. No catalog/browse mode. |
+| N1 | No leaderboards or social features | Validates core loop first |
+| N2 | No push notifications | Requires native/service worker complexity |
+| N3 | No voice input | Text-first MVP; voice is v2 |
+| N4 | No desktop-optimized layout | Mobile web only |
+| N5 | No real auth/payments in prototype | Simulated with localStorage |
+| N6 | No content authoring CMS | Topics defined in code |
+| N7 | No offline mode | Conversations require API calls |
+| N8 | No cross-device sync | localStorage only for prototype |
 
 ---
 
 ## Milestones
 
-### M1: Foundation (Week 1)
+### M1: Foundation
 - Project scaffolding (React + Vite + Tailwind + React Router)
-- Supabase setup (auth + database schema)
-- Data model for lessons, user progress, subscriptions
-- Lesson content JSON schema + first 2 lessons authored
+- Data model: topics, chat sessions, user state
+- Topic definitions with system prompts (3 MVP topics)
 - Basic routing and screen shells
+- Vercel Edge Function for LLM proxy
 
-### M2: Core Learning Loop (Week 2)
-- Onboarding flow (3-step personalization)
-- Lesson player with all 4 exercise types
-- One-question-per-screen interaction model
-- Immediate feedback (correct/incorrect) with animations
-- Lesson completion celebration screen
-- First module fully playable (6 lessons)
+### M2: Core Chat Loop
+- Onboarding flow (welcome → pick topic → chat)
+- Chat interface with all message types (AI, user, Concept Card, Quick Check, Suggested Actions, XP Moment)
+- Response parsing (`[QUIZ]`, `[CONCEPT]`, `[SUGGESTIONS]` tags)
+- Streaming responses with typing indicator
+- Session Opener and Session Summary
 
-### M3: Gamification + Auth (Week 3)
-- Authentication (email + Google via Supabase)
-- XP system (earn, accumulate, display)
-- Streak system (track, display, freeze)
-- Daily goal (set, track, celebrate completion)
-- Levels (XP thresholds, level display)
-- Home screen with learning path, streak, XP, daily goal ring
+### M3: Gamification + Navigation
+- XP system (earn, accumulate, display, level-up)
+- Streak system (track, display, celebrate milestones)
+- Daily goal (set, track, mini-bar)
+- Badges (9 badges with trigger logic)
+- Topic Dashboard (Learn tab) with Continue Card + topic grid
+- Topic Index bottom sheet for switching
+- Session Celebration overlay
+- Today tab (daily dashboard)
+- Profile tab (stats, badges, settings)
 
-### M4: Content + Adaptation (Week 4)
-- All 4 modules authored (24 lessons, 3 difficulty tiers each)
-- Adaptive difficulty (tier adjustment based on performance)
-- Role-based content framing (examples adapt to user's role)
-- Achievement badges (5 MVP badges)
-- Profile screen with stats
-
-### M5: Payments + Polish (Week 5)
-- Stripe integration (checkout, subscription management)
-- Free/Pro tier enforcement (3 lessons/day limit, paywall screen)
-- Subscription status sync (Stripe → Supabase)
+### M4: Polish + Launch
+- All 3 MVP tutor system prompts refined and tested
+- Free tier enforcement (2 sessions/day, upgrade prompt)
+- Paywall screen (simulated)
 - Animation polish (celebrations, transitions, micro-interactions)
-- Mascot integration across screens
 - Mobile UX polish pass
-
-### M6: QA + Launch Prep (Week 6)
-- Full QA pass (→ `/qa-app`)
-- Performance optimization
-- Deploy to Vercel
-- Launch checklist (→ `/prep-launch`)
+- QA pass (→ `/qa-app`)
+- Deploy to Vercel (→ `/prep-launch`)
 
 ---
 
@@ -220,20 +227,20 @@ These are specific scope boundaries to prevent creep during build:
 | Layer | Technology |
 |-------|-----------|
 | Frontend | React + Vite + Tailwind CSS + React Router |
-| Auth | Supabase Auth (email + Google OAuth) |
-| Database | Supabase (Postgres) |
-| Payments | Stripe (Checkout + Customer Portal + Webhooks) |
+| LLM | Claude 3.5 Haiku via Vercel Edge Function |
+| State | localStorage (3 hooks: useStore, useChat, useTopics) |
 | Animations | Framer Motion |
 | Deployment | Vercel |
-| Content | JSON data files (lesson definitions) |
+| Auth | Simulated (localStorage) — Supabase planned |
+| Payments | Simulated — Stripe planned |
 
 ---
 
 ## Success Criteria
 
-The MVP succeeds if:
-1. A new user goes from app open → first lesson complete in under 3 minutes
-2. Completing a lesson feels satisfying and takes 3-5 minutes
-3. The streak/XP loop creates a genuine pull to return the next day
-4. The paywall feels like friction removal, not punishment
-5. Someone can show it to a friend and say "It's Duolingo but for learning AI" and the friend gets it
+1. A new user goes from app open → chatting with AI tutor in under 60 seconds
+2. A session feels satisfying and takes 5-8 minutes
+3. The streak/XP loop creates genuine pull to return the next day
+4. Users can articulate what they learned after a session
+5. The experience feels like learning, not just chatting — Concept Cards and Quick Checks make it structured
+6. Someone can show it to a friend and say "It teaches you AI through conversation" and the friend gets it

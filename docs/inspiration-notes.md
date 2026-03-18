@@ -1,7 +1,7 @@
 # Inspiration Notes: Patterns & Design Lessons for Aible
 
-**Date:** 2026-03-17
-**Sources:** Duolingo deep dive, competitor analysis (Brilliant, Mimo, Grasshopper, MOOCs), gamification & retention research
+**Date:** 2026-03-17 (v1), 2026-03-18 (v2 addendum — chat-based pivot)
+**Sources:** Duolingo, Brilliant, Mimo, Grasshopper, MOOCs (v1). Khanmigo, Pi.ai, Character.AI, Duolingo Max, Q-Chat, Replika (v2).
 
 ---
 
@@ -294,3 +294,72 @@
 8. **Scenario-based exercises, not quizzes.** "Your client asks you to..." framing, not "What is the definition of..."
 9. **Real output from every lesson.** Aible's killer differentiator. Users leave with something usable.
 10. **Teach principles, not products.** Tool-agnostic prompt thinking ages better than "click here in ChatGPT."
+
+---
+
+## V2 Addendum: Chat-Based Learning Patterns (2026-03-18)
+
+### Pattern 11: The Guided Session Structure
+
+**Source:** Duolingo Max Roleplay + Quizlet Q-Chat
+
+Every learning conversation follows a three-act structure:
+1. **Opening** — Tutor states topic and learning goal
+2. **Dialogue** — Socratic conversation with 2-3 embedded Quick Checks
+3. **Closing** — Session summary, XP awarded, "what's next" recommendation
+
+This transforms open-ended chat into a completable learning event. Without it, users have no sense of accomplishment.
+
+### Pattern 12: The Tutor Catalog
+
+**Source:** Character.AI + Brilliant course catalog
+
+Visually rich grid of AI tutors with: avatar, name, specialty, personality hint, progress ring, last-active time. This IS the home screen. The avatar and personality do 80% of the work making users want to tap.
+
+### Pattern 13: Embedded Knowledge Checks
+
+**Source:** Q-Chat + Khanmigo
+
+Three types that work in chat:
+1. **Open-ended comprehension** — "In your own words, what's the difference between..."
+2. **Quick-fire choice** — Tappable button options inline in chat
+3. **Apply-it scenario** — "You're building X. Would you use Y or Z?"
+
+Quick-fire choices as tappable pills reduce friction and feel game-like.
+
+### Pattern 14: Conversational XP
+
+**Source:** Original research — no product does this well (opportunity)
+
+XP triggers: session completion (+25), correct Quick Check (+10), new concept (+5), daily first session (+5), new topic started (+10). Never award XP for messages sent or time spent.
+
+### Pattern 15: Tutor-Initiated Engagement
+
+**Source:** Pi.ai + Replika
+
+The AI reaches out proactively: morning prompts, knowledge decay nudges, streak reminders. Limit to 1/day. Varies type. This fills the "next lesson" pull gap that chat-based products lack.
+
+### Pattern 16: Rich Media in Chat
+
+**Source:** Socratic by Google + Brilliant
+
+Chat messages must include more than text: code blocks with syntax highlighting, comparison cards, analogy illustrations, expandable details. Teaching AI through text-only chat is like teaching art through radio.
+
+### Pattern 17: Onboarding as First Conversation
+
+**Source:** Pi.ai + Character.AI
+
+Instead of forms and screens, the first experience IS a conversation. A "meta" tutor assesses level through chat, then recommends a starting tutor. Demonstrates the product's core value immediately.
+
+### Updated Design Principles (v2)
+
+1. **5-8 minute sessions, bounded.** Tutor controls pacing with clear start and end.
+2. **Suggested Actions after every AI message.** Guides users who don't know what to ask. Critical differentiator from ChatGPT.
+3. **Socratic method default.** Tutor asks questions, never lectures. 2-4 paragraph max per message.
+4. **Quick Checks every 2-3 minutes.** Embedded naturally, not test-like.
+5. **Distinct tutor personalities.** Different communication styles per topic. The tutor IS the product.
+6. **Visible progress = concept mastery.** Progress rings on topic cards, concepts with explored/mastered states.
+7. **Chat ≠ messaging.** Warm gray background, Concept Cards, Quick Checks make it feel educational.
+8. **Bottom sheet > sidebar.** Topic switching via slide-up panel, not left drawer. Avoids Slack feel.
+9. **Session celebrations preserve the Duolingo dopamine hit.** Full-screen overlay with XP animation replaces lesson-complete screen.
+10. **Teach principles, not products.** Still true — even more important when the tutor can adapt examples conversationally.

@@ -1,86 +1,108 @@
-# Aible — Bug Log
+# Bug Log — Aible v2 (Chat-Based Pivot)
 
 **Date:** 2026-03-18
-**Reviewer:** Orchestrator + QA agents (verified against source)
+**Reviewer:** QA pass against PRD v2 + UX Spec v2
 
 ---
 
-## P1 — Should Fix Before Sharing
+## P1 — Must Fix Before Launch
 
-### BUG-01: Streak dates use UTC instead of local time
-**File:** [useStore.js:7-9](app/src/store/useStore.js#L7-L9)
-**Details:** `getToday()` uses `new Date().toISOString().slice(0, 10)` which returns UTC date. A user completing a lesson at 11pm EST gets tomorrow's UTC date, which breaks streak continuity — the system thinks they skipped a day.
-**Impact:** Streaks unreliable for any user not in UTC timezone. Undermines core gamification.
-**Fix:** Replace with `new Date().toLocaleDateString('en-CA')` which returns local YYYY-MM-DD.
+### BUG-01: Tutor avatar missing from AI chat bubbles
 
-### BUG-02: Replaying lessons via Practice awards duplicate XP and inflates stats
-**File:** [useStore.js:97](app/src/store/useStore.js#L97), [Practice.jsx:41](app/src/screens/Practice.jsx#L41)
-**Details:** `completeLesson` always pushes `lessonId` to `completedLessons` without checking for duplicates: `const newCompleted = [...prev.completedLessons, lessonId]`. Replaying a lesson via Practice awards full XP again and inflates the completedLessons array, which affects badge triggers (e.g., "AI Explorer" at 10 lessons counts replays).
-**Impact:** Users can farm unlimited XP. Lesson count and badge progress are inflated.
-**Fix:** Deduplicate: `const newCompleted = prev.completedLessons.includes(lessonId) ? prev.completedLessons : [...prev.completedLessons, lessonId]`. For practice replays, either skip XP entirely or award reduced XP.
+**Where:** [Chat.jsx:48-58](app/src/pages/Chat.jsx#L48-L58) — `AIBubble` component
+**Spec:** UX Spec S-06: "Avatar: 28px circle in tutor's accent color" next to every AI message
+**Actual:** AI bubbles render with accent left border but no avatar circle. The `TutorAvatar` component exists (line 12-21) and is used in `SessionOpener`, but not in `AIBubble`.
+**Impact:** Without the avatar, AI messages look like generic chat bubbles rather than coming from a named tutor. This is a key visual differentiator from messaging apps.
+**Fix:** Add `<TutorAvatar>` to `AIBubble`, pass `color` and `name` props. ~5 min fix.
 
-### BUG-03: Streak freeze is never consumed
-**File:** [useStore.js:109-114](app/src/store/useStore.js#L109-L114)
-**Details:** When the streak freeze saves the streak (line 109-111), the code increments the streak but doesn't set `streakFreezeAvailable: false` or `streakFreezeUsedThisWeek: true`. The freeze is never consumed, making it infinite. Additionally:
-- The freeze only fires during `completeLesson`, not on app open. If a user opens the app after missing a day but doesn't complete a lesson, the streak isn't protected.
-- `streakFreezeUsedThisWeek` has no weekly reset logic.
-**Impact:** Freeze mechanic is non-functional as designed. Either infinite (never consumed) or doesn't trigger (app open without lesson).
-**Fix:** (1) Set `streakFreezeAvailable: false` and `streakFreezeUsedThisWeek: true` when freeze is consumed. (2) Move streak continuity check to `loadState` so it fires on app open. (3) Add weekly reset of `streakFreezeUsedThisWeek`.
+### BUG-02: `completeSession` never called — session XP and daily counter broken
 
-### BUG-04: Free tier limit bypassable via direct URL
-**File:** [useStore.js:92](app/src/store/useStore.js#L92), [Home.jsx:20-27](app/src/screens/Home.jsx#L20-L27)
-**Details:** The `canPlayLesson` guard exists in the Home screen's `handleLessonTap` but not in the Lesson screen itself. A user could navigate directly to `/lesson/lesson-2-1` after hitting the daily limit and complete it without the paywall blocking.
-**Impact:** Low for prototype demo (users won't type URLs), but the monetization gate has no server-side enforcement.
-**Fix:** Add a guard at the top of the Lesson component: if `!canPlayLesson && !completedLessons.includes(lessonId)`, redirect to `/paywall`.
+**Where:** [Chat.jsx:259-261](app/src/pages/Chat.jsx#L259-L261) — `End Session` handler
+**Spec:** PRD F5.1: "+25 per session", "+5 daily first-session bonus". Data model: `sessionsCompleted` tracks count.
+**Actual:** The "End Session" overflow button just shows the celebration overlay (`setShowCelebration(true)`) without calling `completeSession()`. This means:
+- +25 session XP is never awarded
+- +5 daily-first-session bonus never triggers
+- `dailySessionsCompleted` never increments (so the 2-session free limit never activates)
+- `sessionsCompleted` in TopicProgress stays at 0
+- "First Steps" badge ("complete your first session") never triggers
+**Impact:** Core gamification loop is broken. The session count fuels daily goals, streaks, badges, and freemium limits.
+**Fix:** Call `completeSession(topicId, sessionXp, conceptsCovered, conceptsMastered, checkpointsPassed)` when "End Session" is tapped, before showing celebration. ~10 min fix.
 
----
+### BUG-03: Session Summary Card missing from chat
 
-## P2 — Nice to Have Before Sharing
+**Where:** [Chat.jsx](app/src/pages/Chat.jsx) — no summary card component
+**Spec:** UX Spec S-07: "Session Summary Card appears: purple gradient left border, white bg. 'Session Summary' — 14px semibold, purple. Bulleted concepts covered (teal checkmarks). 'Quick Checks: 2/2 correct'"
+**Actual:** When ending a session, the celebration overlay appears immediately. There is no in-chat summary card showing what was covered.
+**Impact:** The wrap-up feels abrupt. Users don't see a tangible list of what they learned before the celebration, which weakens the sense of accomplishment.
+**Fix:** Before showing celebration, inject a summary message into the chat with concepts covered and quiz results. ~20 min fix.
 
-### BUG-05: Badge detail modal missing
-**File:** [Badges.jsx:28-48](app/src/screens/Badges.jsx#L28-L48)
-**Details:** Spec says "Tap earned badge → detail modal (badge name, date earned, description)." Earned badges have a `whileTap` scale animation but no `onClick` handler and no modal component. Tapping does nothing functional.
-**Fix:** Add a simple modal that shows badge name, icon, description, and earned date.
+### BUG-04: No confetti or particle effects on celebration
 
-### BUG-06: "You learned: {concept name}" missing from LessonComplete
-**File:** [LessonComplete.jsx](app/src/screens/LessonComplete.jsx)
-**Details:** Spec requires "Concept summary: 'You learned: [concept name]'" on every lesson completion. The first-lesson variant shows "You just learned your first AI skill!" but regular completions show no concept name.
-**Fix:** Pass the lesson concept through state/params and render "You learned: {concept}" below the header.
+**Where:** [CelebrationOverlay.jsx](app/src/components/CelebrationOverlay.jsx)
+**Spec:** PRD F4.3: "Celebration overlay: full-screen, purple gradient, XP animation with particle burst". UX Spec S-07: mentions confetti for daily goal met.
+**Actual:** Celebration shows spring animations for XP/streak/progress but no confetti or particle burst. The old v1 app had a `Confetti.jsx` component that still exists at `app/src/components/Confetti.jsx`.
+**Impact:** Celebration feels muted. Confetti is the "dopamine hit" that makes users want to come back.
+**Fix:** Reuse the existing `Confetti.jsx` component or add a simple CSS particle burst. ~15 min fix.
 
-### BUG-07: Onboarding subheader missing
-**File:** [Onboarding.jsx:66](app/src/screens/Onboarding.jsx#L66)
-**Details:** Copy deck specifies subheader "We'll personalize your lessons." under "What do you do?" on the role selection step. The StepContent component only renders the title, no subheader.
-**Fix:** Add subtitle prop to StepContent, pass "We'll personalize your lessons." for step 0.
+### BUG-05: New concept XP (+5) never awarded
 
-### BUG-08: Module progress count missing from Home headers
-**File:** [Home.jsx:108-116](app/src/screens/Home.jsx#L108-L116)
-**Details:** Spec says module header should show "Prompt Foundations — 1/6" with progress count. Current implementation only shows the module title.
-**Fix:** Count completed lessons per module and display "{title} — {completed}/{total}".
+**Where:** [Chat.jsx](app/src/pages/Chat.jsx), [useChat.js:196-199](app/src/hooks/useChat.js#L196-L199)
+**Spec:** PRD F5.1: "+5 per new concept explored". Data model XP table.
+**Actual:** `useChat` correctly tracks `conceptsCovered` when `[CONCEPT]` tags are parsed (line 196-199), but there is no `addXp(5)` call when a new concept is discovered. The concept is recorded but not rewarded.
+**Impact:** Users miss XP that should make them feel progress is happening during the session, not just at quiz moments.
+**Fix:** In `useChat.js` after the streaming completes, check for new concepts not previously in `conceptsCovered` and call a callback to award XP per new concept. ~15 min fix.
 
 ---
 
-## Not Bugs (Agent False Positives — Verified Correct)
+## P2 — Should Fix Before Sharing Publicly
 
-These items were flagged by QA agents but confirmed correct in the source:
+### BUG-06: Streak text doesn't pluralize
 
-| Claim | Reality |
-|-------|---------|
-| Onboarding goes to signup, not first lesson | Onboarding.jsx:38 navigates to `/lesson/${lesson.id}` |
-| "I already have an account" link missing | Welcome.jsx:65-70 has the link |
-| Auto-advance is 500ms not 300ms | Onboarding.jsx:47 uses 300ms |
-| Only 4 role options | constants.js has all 6 roles |
-| 4 goal options instead of 3 | constants.js has exactly 3 goals |
-| Tab bar visible during lessons | Lesson route is outside Layout (App.jsx:22 vs 27-32) |
-| Concept intro card missing | Lesson.jsx:104-111 + ConceptIntro component at line 168 |
-| PromptBuilder always marks wrong | Line 28 correctly maps indices to strings before comparing |
-| FillBlank has no deselect | FillBlank.jsx:10-21 handles tap-to-deselect |
-| Incorrect feedback uses red | CSS error color = #F59E0B (amber), text uses amber-600 |
-| Incorrect button says "Continue" | Lesson.jsx:157 uses "Got it" for incorrect |
-| Feedback has no slide animation | Lesson.jsx:138 uses motion y:100→0 spring |
-| Perfect bonus is 25 not 20 | constants.js:75 XP_PERFECT_BONUS = 20 |
-| Daily counter never resets | useStore.js:47-50 resets on load if new day |
-| Logout doesn't redirect | Profile.jsx:19 navigates to "/" |
-| Correct/incorrect feedback copy wrong | constants.js:60-71 matches spec exactly |
+**Where:** [Today.jsx:44](app/src/pages/Today.jsx#L44)
+**Actual:** Text always says "day streak" regardless of count. "1 day streak" is correct but "5 day streak" should be "5-day streak" or "day streak!" (current shows "day streak" for all).
+**Fix:** Trivial copy fix. ~2 min.
+
+### BUG-07: AI bubble still shows raw `[CONCEPT]` and `[QUIZ]` tags during streaming
+
+**Where:** [Chat.jsx:300-301](app/src/pages/Chat.jsx#L300-L301), [useChat.js:152-159](app/src/hooks/useChat.js#L152-L159)
+**Actual:** During streaming, the assistant message content is rendered as raw text (`fullContent`), which temporarily includes `[QUIZ]{"question":...}[/QUIZ]` and `[CONCEPT]...` tags visible to the user before parsing completes on stream end. The parsed version only replaces the raw content after the stream finishes.
+**Impact:** Looks broken/glitchy during stream. Users briefly see JSON in their chat.
+**Fix:** Apply `parseAIResponse` on each streaming update to strip tags from `displayContent`, or hide the raw message and only render the parsed version. ~20 min fix.
+
+### BUG-08: Topic switching from celebration doesn't work correctly
+
+**Where:** [Chat.jsx:377](app/src/pages/Chat.jsx#L377)
+**Actual:** "Switch Topic" on celebration calls `setShowCelebration(false); setShowTopicIndex(true)` — but TopicIndex navigates to a new `/chat/:topicId` route, which unmounts the current Chat component. The TopicIndex sheet works, but the flow is: celebration → dismiss → TopicIndex → navigate to new chat. The transition is jarring because the old chat briefly flashes.
+**Fix:** Navigate to `/home` first, then show TopicIndex from there. Or add a transition delay. ~10 min.
+
+---
+
+## P3 — Polish (Post-Launch)
+
+### BUG-09: Chat message slide-in animation missing
+
+**Spec:** UX Spec animation table: "Chat messages: 150ms slide-up"
+**Actual:** Messages appear instantly without animation.
+**Fix:** Wrap messages in `motion.div` with `initial={{ opacity: 0, y: 10 }}` and `animate={{ opacity: 1, y: 0 }}`.
+
+### BUG-10: Streak flame doesn't pulse on Today tab icon
+
+**Spec:** UX Spec: "Streak flame on Today tab pulses orange when streak is active"
+**Actual:** Static number badge, no pulse animation.
+**Fix:** Add CSS `animate-pulse` or Framer Motion to the streak indicator.
+
+### BUG-11: Badge Detail bottom sheet (S-11) not implemented
+
+**Spec:** UX Spec S-11: small sheet (~40% viewport) with badge icon, name, description, "Earned on [date]"
+**Actual:** Tapping badges on Profile does nothing.
+**Fix:** Add a small bottom sheet component.
+
+### BUG-12: S-04 Quick Preferences screen not implemented
+
+**Spec:** UX Spec S-04: "How much do you know about AI?" — single-select with Skip option.
+**Actual:** Onboarding goes directly from Pick Topic to Chat, skipping preferences.
+**Impact:** `experienceLevel` is always "none", so tutor can't adapt. Low impact since system prompts say "start with what the user knows."
+**Fix:** Add optional preferences step. Could also be deferred to in-chat ("What's your experience with AI?").
 
 ---
 
@@ -88,6 +110,7 @@ These items were flagged by QA agents but confirmed correct in the source:
 
 | Priority | Count | Items |
 |----------|-------|-------|
-| P1 | 4 | UTC dates, XP farming, streak freeze, URL bypass |
-| P2 | 4 | Badge modal, concept summary, onboarding subheader, module progress |
-| **Total** | **8** | |
+| P1 — Must fix | 5 | Avatar, completeSession, summary card, confetti, concept XP |
+| P2 — Should fix | 3 | Streak text, raw tags during stream, topic switch flow |
+| P3 — Polish | 4 | Message animation, flame pulse, badge detail, preferences |
+| **Total** | **12** | |

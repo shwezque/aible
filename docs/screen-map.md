@@ -1,186 +1,161 @@
-# Aible — Screen Map
+# Aible Screen Map — Chat-Based Learning Model
 
-**Date:** 2026-03-17
-**Total screens:** 17
+> Version 2.0 — 2026-03-18
 
 ---
 
 ## Screen Inventory
 
-| ID | Screen Name | PRD Feature | Tab/Context |
-|----|------------|-------------|-------------|
-| S-01 | Welcome | F1 Onboarding | Entry |
-| S-02 | Role Selection | F1, F6 | Onboarding flow |
-| S-03 | Goal Selection | F1 | Onboarding flow |
-| S-04 | Experience Level | F1, F6 | Onboarding flow |
-| S-05 | Signup / Login | F2 Auth | Post-first-lesson |
-| S-06 | Daily Goal Selection | F5 Gamification | Onboarding flow |
-| S-07 | Home (Learning Path) | F3, F5, F9 | Learn tab |
-| S-08 | Practice | F4 | Practice tab |
-| S-09 | Badges | F5 | Badges tab |
-| S-10 | Lesson Exercise | F4, F8 | Lesson player |
-| S-11 | Feedback Overlay | F4 | Lesson player |
-| S-12 | Concept Intro Card | F4 | Lesson player |
-| S-13 | Lesson Complete | F4, F5 | Lesson player |
-| S-14 | Paywall | F7 | Modal/fullscreen |
-| S-15 | Profile | F2, F5, F7 | Profile tab |
-| S-16 | Streak Milestone Modal | F5 | Modal overlay |
-| S-17 | Streak Freeze Notification | F5 | Home banner |
+### New Screens
+| ID | Screen | Type |
+|----|--------|------|
+| S-06 | Chat Session | Core screen (complete redesign) |
+| S-07 | Session Wrap-Up / Celebration | Overlay |
+| S-10 | Topic Index Panel | Bottom sheet |
+
+### Modified Screens
+| ID | Screen | What Changed |
+|----|--------|-------------|
+| S-02 | Onboarding — Welcome | Copy updated for chat model |
+| S-03 | Onboarding — Pick Topic | Topic grid replaces path selection |
+| S-05 | Learn Tab — Topic Dashboard | Topic cards + continue hero replaces path nodes |
+| S-08 | Today Tab | New daily dashboard (replaces Practice Tab position) |
+| S-09 | Profile Tab | Badges section added (absorbed from old Badges tab) |
+
+### Removed Screens
+| Old ID | Screen | Reason |
+|--------|--------|--------|
+| S-07 (old) | Home Learning Path | → S-05 Topic Dashboard |
+| S-10 (old) | Lesson Player | → S-06 Chat Session |
+| S-11 (old) | Feedback Overlay | → In-chat Quick Check flow |
+| S-12 (old) | Concept Intro Card | → In-chat Concept Cards |
+| S-13 (old) | Lesson Complete | → S-07 Session Celebration |
+| — | Practice Tab | Absorbed into chat Quick Checks |
+| — | Badges Tab | Moved into Profile tab |
 
 ---
 
-## Flow Connections
-
-### Flow 1: First-Session (New User)
+## Screen Hierarchy
 
 ```
-S-01 Welcome
-  │
-  ├─ "Get Started" →
-  │
-  S-02 Role Selection
-  │  (tap any option)
-  │
-  S-03 Goal Selection
-  │  (tap any option)
-  │
-  S-04 Experience Level
-  │  (tap any option)
-  │
-  S-12 Concept Intro Card (first lesson)
-  │  "Let's practice!"
-  │
-  S-10 Exercise Screen (×6 exercises)
-  │  └─ S-11 Feedback Overlay (after each "Check")
-  │
-  S-13 Lesson Complete
-  │  "Continue"
-  │
-  S-05 Signup / Login
-  │  ├─ Create account → S-06 Daily Goal → S-07 Home
-  │  ├─ Google login → S-06 Daily Goal → S-07 Home
-  │  └─ Skip for now → S-06 Daily Goal → S-07 Home
-```
-
-### Flow 2: Returning User (Daily Session)
-
-```
-S-01 Welcome ("Welcome back")
-  │  "Continue"
-  │
-  S-07 Home (Learning Path)
-  │  ├─ Streak freeze banner (S-17) if applicable
-  │  │
-  │  (tap current lesson node)
-  │
-  S-12 Concept Intro Card
-  │  "Let's practice!"
-  │
-  S-10 Exercise Screen (×6-10 exercises)
-  │  └─ S-11 Feedback Overlay (after each "Check")
-  │
-  S-13 Lesson Complete
-  │  ├─ If streak milestone → S-16 Streak Modal → S-07 Home
-  │  ├─ If daily goal not met → S-07 Home (goal ring updated)
-  │  ├─ If daily goal met → S-07 Home (celebration banner)
-  │  └─ If free tier limit (3 lessons) → S-14 Paywall
-  │       ├─ Upgrade → Stripe Checkout → S-07 Home (Pro)
-  │       └─ "Maybe later" → S-07 Home
-```
-
-### Flow 3: Lesson (Core Loop Detail)
-
-```
-S-12 Concept Intro Card
-  │  "Let's practice!"
-  │
-  ┌──────────────────────────────┐
-  │  S-10 Exercise Screen        │
-  │  (exercise 1 of N)           │
-  │                              │
-  │  User selects answer         │
-  │  Taps "Check"                │
-  │       │                      │
-  │  S-11 Feedback Overlay       │
-  │  (correct or incorrect)      │
-  │  Taps "Continue" / "Got it"  │
-  │       │                      │
-  │  Progress bar advances       │
-  │  Next exercise loads         │
-  └──────────────────────────────┘
-       (repeat for all exercises)
-            │
-  S-13 Lesson Complete
-```
-
-### Flow 4: Tab Navigation (Authenticated User)
-
-```
-  ┌──────────┬──────────┬──────────┬──────────┐
-  │  Learn   │ Practice │  Badges  │ Profile  │
-  │  (S-07)  │  (S-08)  │  (S-09)  │  (S-15)  │
-  └──────────┴──────────┴──────────┴──────────┘
-
-  S-07 Home ←→ S-08 Practice ←→ S-09 Badges ←→ S-15 Profile
-  (any tab accessible from any other tab via bottom nav)
-```
-
-### Flow 5: Paywall → Upgrade
-
-```
-S-14 Paywall
-  │
-  ├─ "Start 7-day free trial" (annual)
-  │   → Stripe Checkout (external)
-  │   → Success → S-07 Home (Pro badge visible)
-  │   → Failure → S-14 Paywall (error state)
-  │
-  ├─ Monthly plan
-  │   → Stripe Checkout (external)
-  │   → Success → S-07 Home (Pro badge visible)
-  │   → Failure → S-14 Paywall (error state)
-  │
-  └─ "Maybe later"
-      → S-07 Home
-```
-
-### Flow 6: Profile → Manage Subscription
-
-```
-S-15 Profile
-  │
-  ├─ "Upgrade to Pro" (free user) → S-14 Paywall
-  ├─ "Manage Subscription" (pro user) → Stripe Customer Portal (external)
-  ├─ "Daily Goal" → inline picker (Quick/Steady/Ambitious)
-  └─ "Log Out" → S-01 Welcome
+App Root
+├── First Launch Flow
+│   ├── S-01  Splash
+│   ├── S-02  Welcome
+│   ├── S-03  Pick Topic
+│   ├── S-04  Preferences (optional)
+│   └── S-06  Chat Session (first session)
+│
+├── Tab: Learn (S-05)
+│   ├── S-05  Topic Dashboard
+│   │   ├── [Tap Continue Card] → S-06 Chat (resume)
+│   │   └── [Tap Topic Card] → S-06 Chat (topic-specific)
+│   │
+│   └── S-06  Chat Session (tabs hidden)
+│       ├── Concept Cards (inline)
+│       ├── Quick Checks (inline)
+│       ├── XP Moments (inline)
+│       ├── Suggested Actions (inline)
+│       ├── [Overflow] → S-10 Topic Index
+│       ├── [Overflow] → End Session → S-07
+│       └── [Session complete] → S-07 Celebration
+│           ├── [Keep Going] → S-05
+│           └── [Switch Topic] → S-10
+│
+├── Tab: Today (S-08)
+│   └── S-08  Daily Dashboard
+│
+└── Tab: Profile (S-09)
+    ├── S-09  Profile
+    │   ├── [Tap badge] → S-11 Badge Detail
+    │   └── [Tap Daily Goal] → S-12 Goal Picker
+    └── S-11  Badge Detail (bottom sheet)
 ```
 
 ---
 
-## Feature-to-Screen Traceability
+## Navigation Flows
 
-Every PRD feature maps to at least one screen. Every screen maps to at least one feature.
+### Flow 1: Returning User — Continue Learning
+```
+App Open → S-05 Learn Tab
+  → Tap Continue Card
+  → S-06 Chat (resumes last topic)
+    → Tutor: "Welcome back! Last time we covered X..."
+    → Conversation + Concept Cards + Quick Checks
+    → Session objectives met
+  → S-07 Celebration
+  → "Keep Going" → S-05 (updated progress)
+```
 
-| PRD Feature | Screens |
-|-------------|---------|
-| F1: Onboarding | S-01, S-02, S-03, S-04 |
-| F2: Authentication | S-05, S-15 |
-| F3: Learning Path | S-07 |
-| F4: Lesson Player | S-10, S-11, S-12, S-13, S-08 |
-| F5: Gamification | S-06, S-07, S-09, S-13, S-15, S-16, S-17 |
-| F6: Adaptive Curriculum | S-02, S-04 (inputs), S-10 (output — difficulty varies) |
-| F7: Payments | S-14, S-15 |
-| F8: Lesson Content | S-10, S-12 (content rendered here) |
-| F9: Mobile-First UI | All screens |
+### Flow 2: New User — First Session
+```
+S-01 Splash → S-02 Welcome → S-03 Pick Topic
+  → Select topic, tap "Start Learning"
+  → S-06 Chat (cold start)
+    → Session Opener with tutor intro
+    → First Concept Card (~1 min in)
+    → First Quick Check (~2 min in)
+    → Session wraps up (~5-8 min)
+  → S-07 Celebration ("First Steps" badge earned)
+  → S-05 Learn Tab (populated with progress)
+```
+
+### Flow 3: Topic Switching
+```
+S-06 Chat (Topic A)
+  → Three-dot menu → "Topic Index"
+  → S-10 Bottom Sheet slides up
+  → Tap Topic B
+  → Sheet dismisses
+  → S-06 cross-fades to Topic B
+    → Has history: resumes with "Welcome back!"
+    → New topic: Session Opener appears
+```
+
+### Flow 4: Early Session End
+```
+S-06 Chat → Three-dot → "End Session"
+  → Confirmation: "End session? Progress saved."
+  → "End" → Tutor sends brief summary
+  → S-07 Celebration (scaled to actual progress)
+  → S-05 Learn Tab
+```
 
 ---
 
-## Screen Count by Context
+## Bottom Sheet Inventory
 
-| Context | Screens | Count |
-|---------|---------|-------|
-| Onboarding flow | S-01, S-02, S-03, S-04, S-05, S-06 | 6 |
-| Main tabs | S-07, S-08, S-09, S-15 | 4 |
-| Lesson player | S-10, S-11, S-12, S-13 | 4 |
-| Modals / overlays | S-14, S-16, S-17 | 3 |
-| **Total** | | **17** |
+| Sheet | Trigger | Height |
+|-------|---------|--------|
+| Topic Index (S-10) | Overflow menu, "Switch Topic" on celebration | 75% |
+| Badge Detail (S-11) | Tap badge on Profile | 40% |
+| End Session Confirm | "End Session" in overflow | 25% |
+| Overflow Menu | Three-dot in chat top bar | Auto |
+
+---
+
+## Tab Bar Visibility
+
+| Context | Tab Bar |
+|---------|---------|
+| Learn, Today, Profile | Visible |
+| Chat Session (S-06) | **Hidden** |
+| Celebration (S-07) | **Hidden** |
+| Onboarding (S-01-04) | **Hidden** |
+| Bottom Sheets | Dimmed behind |
+
+---
+
+## Chat Message Type Reference
+
+| Type | Style | Interactive | Trigger |
+|------|-------|-------------|---------|
+| AI Message | White bubble, left-aligned, avatar, accent border | No | AI response |
+| User Message | Purple bubble, right-aligned | No | User input |
+| Concept Card | Full-width card, teal accent, "Key Concept" | No | AI introduces concept |
+| Quick Check | Full-width card, purple accent, tappable pills | **Yes** | AI tests understanding |
+| XP Moment | Centered float, sparkle animation | No | Correct answer, milestone |
+| Session Opener | Centered card, avatar, goals | No | Session start |
+| Session Summary | Full-width card, purple border, checklist | No | Session end |
+| Suggested Actions | Horizontal pill row above input | **Yes** | After every AI message |
