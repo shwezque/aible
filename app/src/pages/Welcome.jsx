@@ -14,7 +14,7 @@ export default function Welcome() {
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
-          className="h-14 mb-8"
+          className="h-28 mb-8"
         />
 
         <motion.h1
