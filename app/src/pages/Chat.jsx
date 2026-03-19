@@ -11,6 +11,7 @@ import CelebrationOverlay from '../components/CelebrationOverlay'
 import TopicIndex from '../components/TopicIndex'
 import TutorAvatar from '../components/TutorAvatar'
 import RenderMarkdown from '../lib/renderMarkdown'
+import VoiceMode from '../components/VoiceMode'
 
 const ACRONYMS = { ai: 'AI', llm: 'LLM', eli5: 'ELI5' }
 function formatConceptName(id) {
@@ -22,41 +23,24 @@ function SessionOpener({ topic }) {
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex flex-col items-center py-8 px-5"
+      className="flex flex-col items-center py-10 px-6"
     >
-      <TutorAvatar color={topic.color} name={topic.tutorName} size={48} />
-      <p className="text-title mt-3 text-ink">
-        Hey! I'm {topic.tutorName}, your {topic.name} tutor.
+      <TutorAvatar color={topic.color} name={topic.tutorName} size={44} />
+      <p className="text-[17px] font-semibold mt-3 text-ink tracking-tight">
+        {topic.tutorName}
       </p>
-      <p className="text-caption text-ink-secondary mt-1 text-center">
-        Ready to explore {topic.subtitle.charAt(0).toLowerCase() + topic.subtitle.slice(1)}? Let's start with the basics.
+      <p className="text-[14px] text-ink-tertiary mt-0.5 text-center">
+        {topic.name}
       </p>
-      <div className="mt-5 w-full bg-surface rounded-2xl border border-line-subtle p-4 shadow-theme">
-        <p className="text-micro text-ink-tertiary mb-2.5">Today's goal</p>
-        <ul className="space-y-1.5">
-          {(topic.conceptMap || []).slice(0, 3).map((c, i) => (
-            <li key={i} className="text-[14px] text-ink-secondary flex items-center gap-2.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-secondary shrink-0" />
-              {formatConceptName(c)}
-            </li>
-          ))}
-        </ul>
-      </div>
     </motion.div>
   )
 }
 
-function AIBubble({ content, color, tutorName }) {
+function AIBubble({ content }) {
   return (
-    <div className="flex gap-2.5 items-start px-4">
-      <TutorAvatar color={color} name={tutorName} size={28} />
-      <div
-        className="bg-surface rounded-2xl px-4 py-3 max-w-[82%] border-l-3 shadow-theme"
-        style={{ borderLeftColor: color }}
-      >
-        <div className="text-[15px] leading-relaxed text-ink">
-          <RenderMarkdown text={content} />
-        </div>
+    <div className="px-6">
+      <div className="text-[15px] leading-[1.75] text-ink">
+        <RenderMarkdown text={content} />
       </div>
     </div>
   )
@@ -64,9 +48,9 @@ function AIBubble({ content, color, tutorName }) {
 
 function UserBubble({ content }) {
   return (
-    <div className="flex justify-end px-4">
-      <div className="bg-primary text-white rounded-2xl px-4 py-3 max-w-[75%]">
-        <p className="text-[15px] leading-relaxed whitespace-pre-wrap">{content}</p>
+    <div className="flex justify-end px-5">
+      <div className="bg-surface-alt rounded-2xl px-4 py-2.5 max-w-[80%]">
+        <p className="text-[15px] leading-[1.6] text-ink whitespace-pre-wrap">{content}</p>
       </div>
     </div>
   )
@@ -84,7 +68,7 @@ function QuizCard({ metadata, onAnswer }) {
   }
 
   return (
-    <div className="mx-4 bg-surface rounded-2xl border border-primary/20 p-5 shadow-theme">
+    <div className="mx-5 bg-surface-alt rounded-2xl p-5">
       <p className="text-micro text-primary mb-2.5">Quick Check</p>
       <p className="text-[15px] font-semibold text-ink mb-4">{question}</p>
       <div className="space-y-2">
@@ -125,7 +109,7 @@ function QuizCard({ metadata, onAnswer }) {
 
 function SuggestionChips({ suggestions, onTap }) {
   return (
-    <div className="px-4 flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+    <div className="px-5 flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
       {(suggestions || []).map((s, i) => (
         <button
           key={i}
@@ -139,15 +123,13 @@ function SuggestionChips({ suggestions, onTap }) {
   )
 }
 
-function TypingIndicator({ color }) {
+function TypingIndicator() {
   return (
-    <div className="flex gap-2.5 items-start px-4">
-      <div className="bg-surface rounded-2xl px-4 py-3 border-l-3 shadow-theme" style={{ borderLeftColor: color }}>
-        <div className="flex gap-1.5">
-          {[0, 150, 300].map(delay => (
-            <span key={delay} className="w-1.5 h-1.5 bg-ink-tertiary rounded-full animate-bounce" style={{ animationDelay: `${delay}ms` }} />
-          ))}
-        </div>
+    <div className="px-5">
+      <div className="flex gap-1.5 py-1">
+        {[0, 150, 300].map(delay => (
+          <span key={delay} className="w-1.5 h-1.5 bg-ink-tertiary rounded-full animate-bounce" style={{ animationDelay: `${delay}ms` }} />
+        ))}
       </div>
     </div>
   )
@@ -156,7 +138,7 @@ function TypingIndicator({ color }) {
 function ConceptCard({ conceptId }) {
   const title = formatConceptName(conceptId)
   return (
-    <div className="mx-4 bg-surface rounded-2xl border border-line-subtle p-4 shadow-theme">
+    <div className="mx-5 bg-surface-alt rounded-2xl p-4">
       <p className="text-micro text-secondary mb-1.5">Key Concept</p>
       <p className="text-title text-ink">{title}</p>
       <div className="mt-3 h-0.5 bg-secondary rounded-full w-10" />
@@ -167,7 +149,7 @@ function ConceptCard({ conceptId }) {
 function SessionSummaryCard({ metadata }) {
   const { conceptsCovered = [], quizTotal = 0, quizPassed = 0 } = metadata || {}
   return (
-    <div className="mx-4 bg-surface rounded-2xl border-l-3 border-l-primary border border-line-subtle p-5 shadow-theme">
+    <div className="mx-5 bg-surface-alt rounded-2xl p-5">
       <p className="text-title text-primary mb-3">Session Summary</p>
       {conceptsCovered.length > 0 && (
         <ul className="space-y-2 mb-3">
@@ -212,6 +194,7 @@ export default function Chat() {
   const [showCelebration, setShowCelebration] = useState(false)
   const [sessionXp, setSessionXp] = useState(0)
   const hasInitialized = useRef(false)
+  const [showVoiceMode, setShowVoiceMode] = useState(false)
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -230,6 +213,8 @@ export default function Chat() {
       })
     }
   }, [])
+
+  const supportsVoice = typeof window !== 'undefined' && ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window)
 
   if (!topic) {
     navigate('/home')
@@ -290,7 +275,7 @@ export default function Chat() {
   return (
     <div className="h-full flex flex-col bg-chat-bg">
       {/* Top Bar */}
-      <div className="bg-surface/95 glass border-b border-line-subtle px-4 py-3 flex items-center justify-between shrink-0 relative z-20">
+      <div className="bg-surface border-b border-line-subtle px-4 py-3 flex items-center justify-between shrink-0 relative z-20">
         <button onClick={() => navigate('/home')} className="text-ink-secondary p-1.5 -ml-1 tap-target">
           <Icon name="chevron-left" size={22} />
         </button>
@@ -340,7 +325,7 @@ export default function Chat() {
       </div>
 
       {/* Chat Area */}
-      <div ref={scrollRef} className="flex-1 overflow-y-auto py-4 space-y-3">
+      <div ref={scrollRef} className="flex-1 overflow-y-auto py-5 space-y-5">
         {messages.length === 0 && <SessionOpener topic={topic} />}
 
         {messages.map((msg, i) => {
@@ -367,7 +352,7 @@ export default function Chat() {
               .replace(/\{[^}]*$/g, '')
               .trim()
             if (!displayText) return null
-            content = <AIBubble content={displayText} color={topic.color} tutorName={topic.tutorName} />
+            content = <AIBubble content={displayText} />
           } else if (msg.role === 'user') {
             content = <UserBubble content={msg.content} />
           }
@@ -384,10 +369,10 @@ export default function Chat() {
           )
         })}
 
-        {isStreaming && <TypingIndicator color={topic.color} />}
+        {isStreaming && <TypingIndicator />}
 
         {error && (
-          <div className="mx-4 bg-error/8 border border-error/15 rounded-2xl p-4">
+          <div className="mx-5 bg-error/8 border border-error/15 rounded-2xl p-4">
             <p className="text-sm text-error">{error}</p>
             <button
               onClick={() => sendMessage(messages.filter(m => m.role === 'user').pop()?.content || 'Hello')}
@@ -407,30 +392,44 @@ export default function Chat() {
       </div>
 
       {/* Input Area */}
-      <div className="bg-surface/95 glass border-t border-line-subtle px-4 py-3 shrink-0">
-        <form
-          onSubmit={(e) => { e.preventDefault(); handleSend() }}
-          className="flex items-center gap-2.5"
-        >
-          <input
-            ref={inputRef}
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="Ask anything..."
-            disabled={isStreaming}
-            className="flex-1 bg-surface-alt rounded-2xl px-4 py-2.5 text-[15px] text-ink placeholder:text-ink-tertiary outline-none focus:ring-2 focus:ring-primary/20 transition-shadow"
-          />
-          <button
-            type="submit"
-            disabled={!inputValue.trim() || isStreaming}
-            className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all ${
-              inputValue.trim() && !isStreaming ? 'bg-primary opacity-100' : 'bg-primary opacity-30'
-            }`}
+      <div className="bg-surface border-t border-line-subtle px-4 py-3 shrink-0">
+        <div className="flex items-center gap-2.5">
+          <form
+            onSubmit={(e) => { e.preventDefault(); handleSend() }}
+            className="flex-1 flex items-center bg-surface-alt rounded-2xl px-4 py-1"
           >
-            <Icon name="arrow-up" size={16} className="text-white" strokeWidth={2.5} />
-          </button>
-        </form>
+            <input
+              ref={inputRef}
+              type="text"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              placeholder="Ask anything..."
+              disabled={isStreaming}
+              className="flex-1 bg-transparent py-2.5 text-[15px] text-ink placeholder:text-ink-tertiary outline-none"
+            />
+            {inputValue.trim() && (
+              <button
+                type="submit"
+                disabled={isStreaming}
+                className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 -mr-1 transition-all ${
+                  !isStreaming ? 'bg-ink opacity-100' : 'bg-ink opacity-30'
+                }`}
+              >
+                <Icon name="arrow-up" size={16} className="text-surface" strokeWidth={2.5} />
+              </button>
+            )}
+          </form>
+          {supportsVoice && (
+            <button
+              type="button"
+              onClick={() => setShowVoiceMode(true)}
+              disabled={isStreaming}
+              className="w-10 h-10 rounded-full bg-ink flex items-center justify-center shrink-0 tap-target transition-opacity"
+            >
+              <Icon name="waveform" size={20} className="text-surface" strokeWidth={2} />
+            </button>
+          )}
+        </div>
       </div>
 
       <XpToast amount={xpToast} show={xpToast !== null} onDone={() => setXpToast(null)} />
@@ -449,6 +448,19 @@ export default function Chat() {
           onSwitchTopic={() => { setShowCelebration(false); navigate('/home') }}
         />
       )}
+
+      <AnimatePresence>
+        {showVoiceMode && (
+          <VoiceMode
+            show={showVoiceMode}
+            onClose={() => setShowVoiceMode(false)}
+            topic={topic}
+            sendMessage={sendMessage}
+            messages={messages}
+            isStreaming={isStreaming}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }
