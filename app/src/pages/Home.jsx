@@ -9,23 +9,11 @@ import { useTheme } from '../hooks/useTheme'
 import logoMark from '../assets/logo-mark.png'
 import logoMarkWhite from '../assets/logo-mark-white.png'
 
-function timeAgo(dateStr) {
-  if (!dateStr) return ''
-  const diff = Date.now() - new Date(dateStr).getTime()
-  const mins = Math.floor(diff / 60000)
-  if (mins < 1) return 'Just now'
-  if (mins < 60) return `${mins}m ago`
-  const hrs = Math.floor(mins / 60)
-  if (hrs < 24) return `${hrs}h ago`
-  const days = Math.floor(hrs / 24)
-  return `${days}d ago`
-}
-
 export default function Home() {
   const navigate = useNavigate()
   const { user, canStartSession } = useStore()
   const { resolved: theme } = useTheme()
-  const { topics, activeTopic } = useTopics(user.topicProgress)
+  const { activeTopic, recentTopics } = useTopics(user.topicProgress)
   const level = getLevelForXp(user.xp)
   const levelProgress = getLevelProgress(user.xp)
   const nextLevel = getNextLevel(user.xp)
@@ -38,8 +26,6 @@ export default function Home() {
     navigate(`/chat/${topicId}`)
   }
 
-  const mvpTopics = topics.filter(t => !t.isComingSoon)
-  const comingSoon = topics.filter(t => t.isComingSoon)
   const goalProgress = Math.min((user.dailySessionsCompleted / (user.dailyGoal || 1)) * 100, 100)
   const goalMet = user.dailySessionsCompleted >= (user.dailyGoal || 1)
 
@@ -100,7 +86,7 @@ export default function Home() {
                 Continue: {activeTopic.name}
               </p>
               <p className="text-white/55 text-[13px] mt-0.5">
-                {timeAgo(activeTopic.progress?.lastActiveAt) || 'Ready to start'}
+                {activeTopic.disciplineName} &middot; {activeTopic.subjectName}
               </p>
             </div>
             <Icon name="chevron-right" size={18} className="text-white/50 shrink-0" />
@@ -134,43 +120,50 @@ export default function Home() {
           <Icon name="chevron-right" size={16} className="text-ink-tertiary shrink-0" />
         </button>
 
-        {/* Topic Grid */}
-        <div>
-          <h2 className="text-title text-ink mb-3">Your Topics</h2>
-          <div className="grid grid-cols-2 gap-3">
-            {mvpTopics.map((topic, i) => (
-              <motion.div
-                key={topic.id}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: i * 0.05, duration: 0.3 }}
-              >
-                <TopicCard topic={topic} onTap={() => handleTopicTap(topic.id)} />
-              </motion.div>
-            ))}
-            {comingSoon.map((topic, i) => (
-              <motion.div
-                key={topic.id}
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: (mvpTopics.length + i) * 0.05, duration: 0.3 }}
-              >
-                <TopicCard topic={topic} />
-              </motion.div>
-            ))}
+        {/* Recent Topics */}
+        {recentTopics.length > 0 && (
+          <div>
+            <h2 className="text-title text-ink mb-3">Recent Topics</h2>
+            <div className="grid grid-cols-2 gap-3">
+              {recentTopics.map((topic, i) => (
+                <motion.div
+                  key={topic.id}
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.05, duration: 0.3 }}
+                >
+                  <TopicCard topic={topic} onTap={() => handleTopicTap(topic.id)} />
+                </motion.div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
+
+        {/* Browse Topics */}
+        <button
+          onClick={() => navigate('/pick-topic')}
+          className="w-full bg-surface rounded-2xl border border-line-subtle p-5 flex items-center gap-4 tap-target shadow-theme transition-all hover:shadow-theme-md"
+        >
+          <div className="w-11 h-11 rounded-xl bg-surface-alt flex items-center justify-center shrink-0">
+            <Icon name="search" size={20} className="text-ink-secondary" />
+          </div>
+          <div className="flex-1 text-left">
+            <p className="text-[15px] font-semibold text-ink tracking-tight">Browse All Topics</p>
+            <p className="text-[13px] text-ink-tertiary mt-0.5">Math, Science, English, History, and more</p>
+          </div>
+          <Icon name="chevron-right" size={16} className="text-ink-tertiary shrink-0" />
+        </button>
 
         {/* Empty state */}
-        {!activeTopic && (
+        {!activeTopic && recentTopics.length === 0 && (
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
             className="bg-primary/6 rounded-2xl p-5 border border-primary/10"
           >
-            <p className="text-[15px] text-primary font-medium tracking-tight">Pick a topic and start chatting.</p>
-            <p className="text-[13px] text-primary/60 mt-1">Your AI tutor is ready.</p>
+            <p className="text-[15px] text-primary font-medium tracking-tight">Pick a topic and start learning.</p>
+            <p className="text-[13px] text-primary/60 mt-1">Your tutor is ready when you are.</p>
           </motion.div>
         )}
       </div>

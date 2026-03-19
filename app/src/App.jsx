@@ -68,8 +68,8 @@ export default function App() {
         <Route path="/" element={
           isNew ? <PageTransition><Welcome /></PageTransition> : <Navigate to="/home" replace />
         } />
+        <Route path="/learn-style" element={<PageTransition><Preferences /></PageTransition>} />
         <Route path="/pick-topic" element={<PageTransition><PickTopic /></PageTransition>} />
-        <Route path="/preferences" element={<PageTransition><Preferences /></PageTransition>} />
 
         {/* Full-screen (no tabs) */}
         <Route path="/chat/:topicId" element={<PageTransition><Chat /></PageTransition>} />

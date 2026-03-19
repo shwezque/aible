@@ -107,30 +107,30 @@ function parseBlocks(text) {
 function renderBlock(block, key) {
   switch (block.type) {
     case 'paragraph':
-      return <p key={key} className="mt-2 first:mt-0">{renderInline(block.content)}</p>
+      return <p key={key} className="mt-4 first:mt-0">{renderInline(block.content)}</p>
 
     case 'heading':
-      if (block.level === 1) return <p key={key} className="mt-3 first:mt-0 text-base font-bold">{renderInline(block.content)}</p>
-      if (block.level === 2) return <p key={key} className="mt-3 first:mt-0 text-[15px] font-semibold">{renderInline(block.content)}</p>
-      return <p key={key} className="mt-2 first:mt-0 text-[14px] font-semibold">{renderInline(block.content)}</p>
+      if (block.level === 1) return <p key={key} className="mt-5 first:mt-0 text-base font-bold">{renderInline(block.content)}</p>
+      if (block.level === 2) return <p key={key} className="mt-5 first:mt-0 text-[15px] font-semibold">{renderInline(block.content)}</p>
+      return <p key={key} className="mt-4 first:mt-0 text-[14px] font-semibold">{renderInline(block.content)}</p>
 
     case 'code':
       return (
-        <pre key={key} className="mt-2 bg-surface-alt rounded-lg px-3 py-2 overflow-x-auto">
+        <pre key={key} className="mt-4 bg-surface-alt rounded-lg px-3 py-2.5 overflow-x-auto">
           <code className="text-[13px] font-mono text-ink-secondary">{block.content}</code>
         </pre>
       )
 
     case 'quote':
       return (
-        <blockquote key={key} className="mt-2 border-l-3 border-primary/40 pl-3 text-ink-secondary italic">
+        <blockquote key={key} className="mt-4 border-l-3 border-primary/40 pl-3 text-ink-secondary italic">
           {renderInline(block.content)}
         </blockquote>
       )
 
     case 'bullet':
       return (
-        <ul key={key} className="mt-2 space-y-1 pl-1">
+        <ul key={key} className="mt-4 space-y-2 pl-1">
           {block.items.map((item, i) => (
             <li key={i} className="flex gap-2">
               <span className="text-primary mt-1.5 shrink-0 w-1.5 h-1.5 rounded-full bg-current" />
@@ -142,7 +142,7 @@ function renderBlock(block, key) {
 
     case 'numbered':
       return (
-        <ol key={key} className="mt-2 space-y-1 pl-1">
+        <ol key={key} className="mt-4 space-y-2 pl-1">
           {block.items.map((item, i) => (
             <li key={i} className="flex gap-2">
               <span className="text-ink-secondary font-medium shrink-0 w-5 text-right">{i + 1}.</span>

@@ -1,9 +1,9 @@
 import { useMemo } from 'react'
-import { TOPICS } from '../data/topics'
+import { TOPICS_FLAT } from '../data/topics'
 
 export function useTopics(userTopicProgress = {}) {
   const topics = useMemo(() => {
-    return TOPICS.map(topic => {
+    return TOPICS_FLAT.map(topic => {
       const progress = userTopicProgress[topic.id] || {
         status: 'not_started',
         conceptsCovered: [],
@@ -39,7 +39,14 @@ export function useTopics(userTopicProgress = {}) {
     return started[0] || null
   }, [topics])
 
+  const recentTopics = useMemo(() => {
+    return topics
+      .filter(t => t.isStarted)
+      .sort((a, b) => (b.progress.lastActiveAt || '').localeCompare(a.progress.lastActiveAt || ''))
+      .slice(0, 4)
+  }, [topics])
+
   const getTopic = (id) => topics.find(t => t.id === id)
 
-  return { topics, activeTopic, getTopic }
+  return { topics, activeTopic, recentTopics, getTopic }
 }

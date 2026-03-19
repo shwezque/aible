@@ -23,7 +23,7 @@ export default function Welcome() {
           transition={{ delay: 0.25, duration: 0.5 }}
           className="text-display text-ink text-center"
         >
-          Learn AI by talking about it
+          Learn from experts who speak your language
         </motion.h1>
 
         <motion.p
@@ -32,7 +32,7 @@ export default function Welcome() {
           transition={{ delay: 0.4, duration: 0.5 }}
           className="text-body text-ink-secondary text-center mt-3 max-w-[300px] leading-relaxed"
         >
-          Chat with expert AI tutors who explain things in plain English. No jargon. No coding. Just conversation.
+          Tutors that adapt to how you learn, explain things in plain language, and let you go at your own pace.
         </motion.p>
       </div>
 
@@ -43,7 +43,7 @@ export default function Welcome() {
         className="pb-10"
       >
         <button
-          onClick={() => navigate('/pick-topic')}
+          onClick={() => navigate('/learn-style')}
           className="w-full bg-primary text-white font-semibold text-[17px] py-4 rounded-2xl tap-target shadow-theme-md"
         >
           Get Started
