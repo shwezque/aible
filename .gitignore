@@ -4,3 +4,7 @@ dist
 *.local
 .env
 .vercel
+
+# Internal tooling
+.claude/
+docs/execution-log.md
